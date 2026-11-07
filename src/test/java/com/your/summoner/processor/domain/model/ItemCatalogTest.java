@@ -42,6 +42,13 @@ class ItemCatalogTest {
         assertThat(catalog.isBoots(123456)).isFalse();
     }
 
+    @Test void consumablesAreClassifiedRegardlessOfPrice() {
+        assertThat(catalog.isConsumable(2003)).isTrue();
+        assertThat(catalog.isConsumable(999)).isTrue();
+        assertThat(catalog.isConsumable(3031)).isFalse();
+        assertThat(catalog.isConsumable(123456)).isFalse();
+    }
+
     @Test void patchUsesCollectorParsingAndNumericOrdering() {
         assertThat(PatchVersion.parse(" 16.22.1 ")).contains(new PatchVersion(16, 22));
         assertThat(PatchVersion.fromGameVersion("16.22.123.456")).contains(new PatchVersion(16, 22));

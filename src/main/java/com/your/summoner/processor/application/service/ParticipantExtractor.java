@@ -56,11 +56,11 @@ public final class ParticipantExtractor {
                 .toList();
 
         var decisions = purchases.stream()
-                .filter(event -> {
-                    int itemId = catalog.normalize(event.itemId());
-                    return catalog.isCompleted(itemId) && !catalog.isBoots(itemId);
-                })
-                .filter(event -> event.frame() >= 0 && event.frame() < match.frames().size())
+                .filter(event -> !catalog.isConsumable(event.itemId()))
+                .filter(event -> event.frame() != null
+                        && event.frame() >= 0 && event.frame() < match.frames().size())
+                .filter(event -> match.frames().get(event.frame()).slots().stream()
+                        .anyMatch(state -> state.slot() == participant.slot()))
                 .map(event -> decision(participant, position, event, match, catalog))
                 .toList();
 

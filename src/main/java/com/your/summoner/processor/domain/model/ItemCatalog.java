@@ -28,6 +28,11 @@ public final class ItemCatalog {
         return item != null && item.boots();
     }
 
+    public boolean isConsumable(int id) {
+        var item = items.get(normalize(id));
+        return item != null && item.consumable();
+    }
+
     public int normalize(int id) {
         var item = items.get(id);
         if (item != null && item.from().size() == 1) {

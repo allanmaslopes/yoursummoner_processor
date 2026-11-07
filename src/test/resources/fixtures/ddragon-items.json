@@ -111,6 +111,14 @@
                            }
               },
     "data":  {
+                 "1055": {
+                     "name": "Doran's Blade",
+                     "gold": { "base": 450, "total": 450, "sell": 180, "purchasable": true },
+                     "tags": ["Health", "Damage", "Lane"],
+                     "consumed": false,
+                     "from": [],
+                     "into": []
+                 },
                  "1001":  {
                               "name":  "Botas",
                               "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e25\u003c/attention\u003e de Velocidade de Movimento\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",

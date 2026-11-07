@@ -23,12 +23,14 @@ class ParticipantExtractorTest {
     @Test
     void startingItemsUntilSixtySeconds() {
         var events = List.of(
-                buy(60, 1, 1001, 0),
+                buy(0, 1, 1055, 0),
+                buy(30, 1, 2003, 0),
+                buy(60, 1, 2003, 0),
                 buy(61, 1, 1002, 0));
 
         var view = viewForSlotOne(match(events, List.of()));
 
-        assertEquals(List.of(1001), view.starting());
+        assertEquals(List.of(1055, 2003, 2003), view.starting());
     }
 
     @Test
@@ -55,12 +57,12 @@ class ParticipantExtractorTest {
         var events = List.of(
                 buy(120, 1, 2001, 0),
                 buy(180, 1, 2002, 0),
-                buy(240, 1, 2003, 0),
+                buy(240, 1, 2005, 0),
                 buy(300, 1, 2004, 0));
 
         var view = viewForSlotOne(match(events, List.of()));
 
-        assertEquals(List.of(2001, 2002, 2003), view.completedOrder());
+        assertEquals(List.of(2001, 2002, 2005), view.completedOrder());
     }
 
     @Test
@@ -112,6 +114,37 @@ class ParticipantExtractorTest {
         assertTrue(sample.win());
     }
 
+    @Test
+    void decisionSkippedWhenBuyerMissingFromFrame() {
+        var frameStates = states(3_000, 6, 2_500, 5).stream()
+                .filter(state -> state.slot() != 1)
+                .toList();
+        var frames = List.of(new Frame(2, frameStates, 4, 3));
+
+        var view = viewForSlotOne(match(List.of(buy(120, 1, 4001, 0)), frames));
+
+        assertTrue(view.decisions().isEmpty());
+    }
+
+    @Test
+    void decisionsIncludeCheapNonConsumables() {
+        var events = List.of(
+                buy(10, 1, 1055, 0),
+                buy(11, 1, 2003, 0),
+                buy(120, 1, 1082, 0),
+                buy(121, 1, 1001, 0),
+                new TimelineEvent(122, 1, EventType.UNDO, 1001, null, 0),
+                buy(180, 1, 3002, 0),
+                buy(240, 1, 2001, 0),
+                new TimelineEvent(250, 1, EventType.BUY, 1082, null, null));
+        var frames = List.of(new Frame(0, states(1_000, 1, 1_000, 1), 0, 0));
+
+        var view = viewForSlotOne(match(events, frames));
+
+        assertEquals(List.of(1055, 1082, 3001, 2001),
+                view.decisions().stream().map(ParticipantExtractor.DecisionSample::itemId).toList());
+    }
+
     private ParticipantExtractor.ParticipantView viewForSlotOne(MatchRecord match) {
         return extractor.extract(match, catalog()).getFirst();
     }
@@ -158,9 +191,12 @@ class ParticipantExtractorTest {
         return new ItemCatalog(List.of(
                 item(1001, 500, false, false, List.of(), List.of(2001)),
                 item(1002, 500, false, false, List.of(), List.of(2002)),
+                item(1055, 450, false, false, List.of(), List.of()),
+                item(1082, 350, false, false, List.of(), List.of()),
+                item(2003, 50, false, true, List.of(), List.of()),
                 item(2001, 3_000, false, false, List.of(1001), List.of()),
                 item(2002, 3_100, false, false, List.of(1002), List.of()),
-                item(2003, 3_200, false, false, List.of(), List.of()),
+                item(2005, 3_200, false, false, List.of(), List.of()),
                 item(2004, 3_300, false, false, List.of(), List.of()),
                 item(3001, 1_100, true, false, List.of(), List.of(3002)),
                 item(3002, 1_100, true, false, List.of(3001), List.of()),
