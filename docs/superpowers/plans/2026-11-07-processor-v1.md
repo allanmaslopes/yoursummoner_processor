@@ -37,7 +37,7 @@
 ### Task 1: Bootstrap
 **Delegado:** Codex `gpt-5.6-terra`.
 Copiar/adaptar do coletor: pom, classe principal (`@SpringBootApplication @EnableFeignClients @EnableScheduling @ConfigurationPropertiesScan`), `application.yml`/`application-test.yml`, `ArchitectureTest`, `ApplicationSmokeTest` (`/processor/actuator/health` 200), `CLAUDE.md`, `AGENTS.md`, `.gitignore`, `.env.example` (`MONGODB_URI`, `COLLECTOR_MONGODB_URI`), `.claude/run-processor.cmd` (porta 8082).
-- [ ] Testes → FAIL → criar → `mvn -q verify` PASS → commit `build: inicia o yoursummoner_processor` (refs `yoursummoner_processor#2`).
+- [ ] Testes → FAIL → criar → `mvn -q verify` PASS → commit `build: inicia o yoursummoner_processor` (refs `yoursummoner_processor#3`).
 
 ### Task 2: Catálogo de itens (Data Dragon) e domínio
 **Delegado:** Codex `gpt-5.6-sol`.
