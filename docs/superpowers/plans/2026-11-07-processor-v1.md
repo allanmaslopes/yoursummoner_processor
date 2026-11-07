@@ -64,7 +64,7 @@ record ParticipantView(int championId, String position /* "TOP".."UTILITY" ou "A
 record DecisionSample(int minute, int itemId, int teamGoldDiff, int laneLevelDiff, int blueKills, int redKills, boolean win) {}
 List<ParticipantView> extract(MatchRecord m, ItemCatalog c);   // 10 por partida (posição vazia → "ANY")
 ```
-Regras: compras pelos eventos BUY do slot, ordenadas por `t`; `UNDO` remove o BUY anterior do mesmo item; SELL não altera a ordem; tudo normalizado com `c.normalize`. `starting` = BUY com `t <= 60`. `boots` = primeiro item com `boots` comprado (normalizado). `completedOrder` = itens completos na ordem (até 3). `treeOrder` = itens da árvore (≥ 1000) na ordem, até o 3º completo inclusive. `skillOrder` = `skillSlot` dos SKILL, até 9. `decisions` = um por BUY de item completo: `minute = frames[frame].minute`, `teamGoldDiff` = soma de `totalGold` do time − do outro no frame, `laneLevelDiff` = nível do slot − nível do slot inimigo da mesma `position` (0 se não houver), abates do frame.
+Regras: compras pelos eventos BUY do slot, ordenadas por `t`; `UNDO` remove o BUY anterior do mesmo item; SELL não altera a ordem; tudo normalizado com `c.normalize`. `starting` = BUY com `t <= 60`. `boots` = primeiro item com `boots` comprado (normalizado). `completedOrder` = itens completos na ordem (até 3). `treeOrder` = itens da árvore (≥ 1000) na ordem, até o 3º completo inclusive. `skillOrder` = `skillSlot` dos SKILL, até 9. `decisions` = um por BUY de **todo item não consumível, qualquer preço** (inclui itens baratos de acúmulo/bola de neve como Selo Sombrio 1082 e itens de início; pedido do usuário em 2026-11-07): `minute = frames[frame].minute`, `teamGoldDiff` = soma de `totalGold` do time − do outro no frame, `laneLevelDiff` = nível do slot − nível do slot inimigo da mesma `position` (0 se não houver), abates do frame.
 - [ ] Testes: `startingItemsUntilSixtySeconds`, `undoRemovesPreviousPurchase`, `questUpgradeCountsAsBaseBoots`, `completedOrderStopsAtThree`, `treeIncludesComponentsAboveThousand`, `skillOrderFirstNine`, `emptyPositionCountsOnlyForChampion`, `decisionSampleUsesEventFrame`.
 - [ ] FAIL → implementar → PASS → commit (refs `#3`).
 
@@ -82,6 +82,7 @@ record ChampionKnowledge(String patch, int championId, String position, int game
 List<ChampionKnowledge> aggregate(String patch, Stream<ParticipantView> views, int minGames, int minOccurrences, int topN);
 ```
 `skillPriority`: para cada skill Q/W/E, o nível em que chega ao máximo (5) na sequência mais comum estendida até 18 pontos não existe; use a ordem em que Q/W/E receberam o 2º ponto na sequência mais comum, com R sempre primeiro. `componentsBefore`: para cada item completo em `completedOrder`, a sequência de itens da árvore comprados entre o item completo anterior e ele.
+- [ ] Antes da Task 4, ajuste a Task 3: `decisions` passa a cobrir toda compra não consumível (regra acima) e `startingItemsUntilSixtySeconds` usa itens baratos reais (Lâmina de Doran 1055 e duas Poções 2003, ambos abaixo de 1000) e confere que os dois aparecem, com repetição.
 - [ ] Testes: `belowMinimumIsNotPublished`, `sequencesSortedByGamesThenWinRate`, `topNLimits`, `skillPriorityFromMostCommonOrder`, `componentsBeforeCompletedItem`, `anyPositionAggregatesAllRoles`.
 - [ ] FAIL → implementar → PASS → commit (refs `#3`).
 
