@@ -74,7 +74,9 @@ public final class ParticipantExtractor {
                 treeOrder,
                 skillOrder,
                 finalCompleted,
-                decisions);
+                decisions,
+                participant.summonerSpells(),
+                participant.runes());
     }
 
     private List<TimelineEvent> effectivePurchases(int slot, List<TimelineEvent> events,
@@ -183,7 +185,15 @@ public final class ParticipantExtractor {
             List<Integer> treeOrder,
             List<Integer> skillOrder,
             List<Integer> finalCompleted,
-            List<DecisionSample> decisions) {
+            List<DecisionSample> decisions,
+            List<Integer> summonerSpells,
+            MatchRecord.Runes runes) {
+        public ParticipantView(int championId, String position, boolean win, List<Integer> starting, Integer boots,
+                               List<Integer> completedOrder, List<Integer> treeOrder, List<Integer> skillOrder,
+                               List<Integer> finalCompleted, List<DecisionSample> decisions) {
+            this(championId, position, win, starting, boots, completedOrder, treeOrder, skillOrder, finalCompleted,
+                    decisions, List.of(), new MatchRecord.Runes(0, 0, List.of(), null));
+        }
     }
 
     public record DecisionSample(

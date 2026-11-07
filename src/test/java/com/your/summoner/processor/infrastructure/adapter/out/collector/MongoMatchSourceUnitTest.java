@@ -5,6 +5,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.your.summoner.processor.domain.model.MatchRecord;
 import com.your.summoner.processor.domain.model.PatchVersion;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -110,5 +111,53 @@ class MongoMatchSourceUnitTest {
         verify(found).sort(sort.capture());
         assertThat(sort.getValue().toBsonDocument(Document.class, MongoClientSettings.getDefaultCodecRegistry()).toJson())
                 .isEqualTo("{\"collectedAt\": 1, \"_id\": 1}");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test void mapsRunesAndSpells() {
+        MongoCollection<Document> collection = mock(MongoCollection.class);
+        FindIterable<Document> found = mock(FindIterable.class, RETURNS_SELF);
+        MongoCursor<Document> cursor = mock(MongoCursor.class);
+        when(collection.find(any(Bson.class))).thenReturn(found);
+        when(found.iterator()).thenReturn(cursor);
+        var runes = new Document("primaryStyle", 8000)
+                .append("subStyle", 8400)
+                .append("perks", List.of(8010, 9111, 9104, 8299, 8444, 8242))
+                .append("statPerks", new Document("offense", 5005).append("flex", 5008).append("defense", 5011));
+        var document = new Document("participants", List.of(new Document("slot", 1)
+                .append("team", 100).append("championId", 266).append("win", true)
+                .append("summonerSpells", List.of(4, 12)).append("runes", runes)));
+        when(cursor.hasNext()).thenReturn(true, false);
+        when(cursor.next()).thenReturn(document);
+
+        try (var matches = new MongoMatchSource(collection).byPatch(new PatchVersion(16, 22))) {
+            var participant = matches.findFirst().orElseThrow().participants().getFirst();
+            assertThat(participant.summonerSpells()).containsExactly(4, 12);
+            assertThat(participant.runes().primaryStyle()).isEqualTo(8000);
+            assertThat(participant.runes().subStyle()).isEqualTo(8400);
+            assertThat(participant.runes().perks()).containsExactly(8010, 9111, 9104, 8299, 8444, 8242);
+            assertThat(participant.runes().statPerks()).isEqualTo(new MatchRecord.StatPerks(5005, 5008, 5011));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test void oldDocumentWithoutStatPerks() {
+        MongoCollection<Document> collection = mock(MongoCollection.class);
+        FindIterable<Document> found = mock(FindIterable.class, RETURNS_SELF);
+        MongoCursor<Document> cursor = mock(MongoCursor.class);
+        when(collection.find(any(Bson.class))).thenReturn(found);
+        when(found.iterator()).thenReturn(cursor);
+        var document = new Document("participants", List.of(new Document("slot", 1)
+                .append("team", 100).append("championId", 266)
+                .append("runes", new Document("primaryStyle", 8000).append("subStyle", 8400).append("perks", List.of(8010))),
+                new Document("slot", 2).append("team", 100).append("championId", 103)));
+        when(cursor.hasNext()).thenReturn(true, false);
+        when(cursor.next()).thenReturn(document);
+
+        try (var matches = new MongoMatchSource(collection).byPatch(new PatchVersion(16, 22))) {
+            var participants = matches.findFirst().orElseThrow().participants();
+            assertThat(participants.getFirst().runes().statPerks()).isNull();
+            assertThat(participants.get(1).runes()).isEqualTo(new MatchRecord.Runes(0, 0, List.of(), null));
+        }
     }
 }

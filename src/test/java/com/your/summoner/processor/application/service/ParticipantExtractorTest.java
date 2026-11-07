@@ -145,6 +145,19 @@ class ParticipantExtractorTest {
                 view.decisions().stream().map(ParticipantExtractor.DecisionSample::itemId).toList());
     }
 
+    @Test
+    void viewCarriesRunesAndSpells() {
+        var participants = participants();
+        var runes = new MatchRecord.Runes(8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242),
+                new MatchRecord.StatPerks(5005, 5008, 5011));
+        participants.set(0, new Participant(1, 100, 266, "TOP", true, List.of(), List.of(4, 12), runes));
+
+        var view = viewForSlotOne(new MatchRecord(participants, List.of(), List.of()));
+
+        assertEquals(List.of(4, 12), view.summonerSpells());
+        assertEquals(runes, view.runes());
+    }
+
     private ParticipantExtractor.ParticipantView viewForSlotOne(MatchRecord match) {
         return extractor.extract(match, catalog()).getFirst();
     }
