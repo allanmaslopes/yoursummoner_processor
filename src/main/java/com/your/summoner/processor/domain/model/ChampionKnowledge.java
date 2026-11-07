@@ -11,7 +11,9 @@ public record ChampionKnowledge(String patch, int championId, String position,
                                 List<SequenceStat> purchaseTree,
                                 Map<Integer, List<SequenceStat>> componentsBefore,
                                 List<SequenceStat> skillOrders, String skillPriority,
-                                List<ItemStat> itemWinRates) {
+                                List<ItemStat> itemWinRates, boolean lowSample,
+                                List<KeystoneStat> keystones, List<RunePageStat> runePages,
+                                List<SpellPairStat> summonerSpells, PrimaryRecommendation primary) {
     public ChampionKnowledge {
         starting = List.copyOf(starting);
         boots = List.copyOf(boots);
@@ -22,5 +24,20 @@ public record ChampionKnowledge(String patch, int championId, String position,
         componentsBefore = Collections.unmodifiableMap(components);
         skillOrders = List.copyOf(skillOrders);
         itemWinRates = List.copyOf(itemWinRates);
+        keystones = List.copyOf(keystones);
+        runePages = List.copyOf(runePages);
+        summonerSpells = List.copyOf(summonerSpells);
+    }
+
+    public ChampionKnowledge(String patch, int championId, String position,
+                             int games, int wins, List<SequenceStat> starting,
+                             List<SequenceStat> boots, List<SequenceStat> buildPaths,
+                             List<SequenceStat> purchaseTree,
+                             Map<Integer, List<SequenceStat>> componentsBefore,
+                             List<SequenceStat> skillOrders, String skillPriority,
+                             List<ItemStat> itemWinRates) {
+        this(patch, championId, position, games, wins, starting, boots, buildPaths, purchaseTree,
+                componentsBefore, skillOrders, skillPriority, itemWinRates,
+                false, List.of(), List.of(), List.of(), null);
     }
 }

@@ -3,7 +3,12 @@ package com.your.summoner.processor.application.service;
 import com.your.summoner.processor.application.service.ParticipantExtractor.ParticipantView;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
 import com.your.summoner.processor.domain.model.ItemStat;
+import com.your.summoner.processor.domain.model.KeystoneStat;
+import com.your.summoner.processor.domain.model.MatchRecord;
+import com.your.summoner.processor.domain.model.PrimaryRecommendation;
+import com.your.summoner.processor.domain.model.RunePageStat;
 import com.your.summoner.processor.domain.model.SequenceStat;
+import com.your.summoner.processor.domain.model.SpellPairStat;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,15 +36,14 @@ public final class KnowledgeAggregator {
             }
         });
         return groups.entrySet().stream()
-                .filter(entry -> entry.getValue().size() >= minGames)
                 .sorted(Map.Entry.comparingByKey(Comparator.comparingInt(Group::championId)
                         .thenComparing(Group::position)))
-                .map(entry -> knowledge(patch, entry.getKey(), entry.getValue(), minOccurrences, topN))
+                .map(entry -> knowledge(patch, entry.getKey(), entry.getValue(), minGames, minOccurrences, topN))
                 .toList();
     }
 
     private ChampionKnowledge knowledge(String patch, Group group, List<ParticipantView> views,
-                                        int minOccurrences, int topN) {
+                                        int minGames, int minOccurrences, int topN) {
         var allSkills = sequences(views, view -> view.skillOrder().size() == 9 ? view.skillOrder() : List.of(),
                 1, Integer.MAX_VALUE);
         var skills = allSkills.stream().filter(stat -> stat.games() >= minOccurrences).limit(topN).toList();
@@ -73,13 +77,143 @@ public final class KnowledgeAggregator {
                                 (ItemStat stat) -> (double) stat.wins() / stat.games()).reversed())
                         .thenComparingInt(ItemStat::itemId))
                 .toList();
+        var starting = sequences(views, ParticipantView::starting, minOccurrences, topN);
+        var boots = sequences(views, view -> view.boots() == null ? List.of() : List.of(view.boots()),
+                minOccurrences, topN);
+        var buildPaths = sequences(views, ParticipantView::completedOrder, minOccurrences, topN);
+        var purchaseTree = sequences(views, ParticipantView::treeOrder, minOccurrences, topN);
+        var generalBuildPath = sequences(views,
+                view -> view.completedOrder().size() == 3 ? view.completedOrder() : List.of(), 1, 1)
+                .stream().findFirst().orElse(null);
+
+        var validRuneViews = views.stream().filter(this::hasCompleteRunes).toList();
+        var allKeystones = keystones(validRuneViews, minOccurrences, Integer.MAX_VALUE);
+        var keystones = allKeystones.stream().limit(topN).toList();
+        var runePages = keystones.stream()
+                .map(keystone -> runePage(validRuneViews, keystone.perk(), generalBuildPath, minOccurrences))
+                .toList();
+        var allSpellPairs = spellPairs(views, minOccurrences, Integer.MAX_VALUE);
+        var spellPairs = allSpellPairs.stream().limit(topN).toList();
+        var primary = allKeystones.isEmpty() ? null : new PrimaryRecommendation(
+                allKeystones.getFirst().perk(),
+                allSpellPairs.isEmpty() ? List.of() : allSpellPairs.getFirst().spells(),
+                allSpellPairs.isEmpty() || allSpellPairs.getFirst().lowSample());
+
         return new ChampionKnowledge(patch, group.championId(), group.position(), views.size(),
                 (int) views.stream().filter(ParticipantView::win).count(),
-                sequences(views, ParticipantView::starting, minOccurrences, topN),
-                sequences(views, view -> view.boots() == null ? List.of() : List.of(view.boots()), minOccurrences, topN),
-                sequences(views, ParticipantView::completedOrder, minOccurrences, topN),
-                sequences(views, ParticipantView::treeOrder, minOccurrences, topN),
-                componentsBefore, skills, skillPriority(skills), itemWinRates);
+                starting, boots, buildPaths, purchaseTree, componentsBefore, skills,
+                skillPriority(skills), itemWinRates, views.size() < minGames,
+                keystones, runePages, spellPairs, primary);
+    }
+
+    private boolean hasCompleteRunes(ParticipantView view) {
+        return view.runes() != null && view.runes().perks().size() == 6;
+    }
+
+    private List<KeystoneStat> keystones(List<ParticipantView> views, int minOccurrences, int topN) {
+        var counts = new HashMap<Integer, Counts>();
+        for (var view : views) {
+            int keystone = view.runes().perks().getFirst();
+            counts.computeIfAbsent(keystone, ignored -> new Counts()).add(view.win());
+        }
+        return counts.entrySet().stream()
+                .sorted((left, right) -> {
+                    int compared = compareCounts(left.getValue(), right.getValue());
+                    return compared != 0 ? compared : Integer.compare(left.getKey(), right.getKey());
+                })
+                .limit(topN)
+                .map(entry -> new KeystoneStat(entry.getKey(), entry.getValue().games,
+                        entry.getValue().wins, entry.getValue().games < minOccurrences))
+                .toList();
+    }
+
+    private RunePageStat runePage(List<ParticipantView> validRuneViews, int keystone,
+                                  SequenceStat generalBuildPath, int minOccurrences) {
+        var keystoneViews = validRuneViews.stream()
+                .filter(view -> view.runes().perks().getFirst() == keystone)
+                .toList();
+        var pages = new HashMap<Page, Counts>();
+        for (var view : keystoneViews) {
+            pages.computeIfAbsent(page(view), ignored -> new Counts()).add(view.win());
+        }
+        var selected = pages.entrySet().stream()
+                .sorted((left, right) -> {
+                    int compared = compareCounts(left.getValue(), right.getValue());
+                    return compared != 0 ? compared : comparePages(left.getKey(), right.getKey());
+                })
+                .findFirst()
+                .orElseThrow();
+        var pageViews = keystoneViews.stream()
+                .filter(view -> selected.getKey().equals(page(view)))
+                .toList();
+
+        var ownBuildPath = sequences(keystoneViews,
+                view -> view.completedOrder().size() == 3 ? view.completedOrder() : List.of(), 1, 1)
+                .stream().findFirst().orElse(null);
+        var buildPath = ownBuildPath;
+        if ((ownBuildPath == null || ownBuildPath.games() < minOccurrences)
+                && generalBuildPath != null
+                && (ownBuildPath == null || generalBuildPath.games() > ownBuildPath.games())) {
+            buildPath = generalBuildPath;
+        }
+
+        var key = selected.getKey();
+        var counts = selected.getValue();
+        return new RunePageStat(keystone, key.primaryStyle(), key.subStyle(), key.perks(),
+                modalStatPerks(pageViews), counts.games, counts.wins, counts.games < minOccurrences,
+                buildPath, buildPath != null && buildPath.games() < minOccurrences);
+    }
+
+    private MatchRecord.StatPerks modalStatPerks(List<ParticipantView> views) {
+        var counts = new HashMap<MatchRecord.StatPerks, Integer>();
+        for (var view : views) {
+            var statPerks = view.runes().statPerks();
+            if (statPerks != null) counts.merge(statPerks, 1, Integer::sum);
+        }
+        return counts.entrySet().stream()
+                .sorted(Comparator.<Map.Entry<MatchRecord.StatPerks, Integer>>comparingInt(Map.Entry::getValue)
+                        .reversed()
+                        .thenComparing(entry -> entry.getKey().offense())
+                        .thenComparing(entry -> entry.getKey().flex())
+                        .thenComparing(entry -> entry.getKey().defense()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private List<SpellPairStat> spellPairs(List<ParticipantView> views, int minOccurrences, int topN) {
+        var counts = new HashMap<List<Integer>, Counts>();
+        for (var view : views) {
+            var spells = view.summonerSpells();
+            if (spells != null && spells.size() == 2) {
+                var normalized = spells.get(0) <= spells.get(1)
+                        ? List.of(spells.get(0), spells.get(1))
+                        : List.of(spells.get(1), spells.get(0));
+                counts.computeIfAbsent(normalized, ignored -> new Counts()).add(view.win());
+            }
+        }
+        return rank(counts, 1, topN).stream()
+                .map(stat -> new SpellPairStat(stat.sequence(), stat.games(), stat.wins(),
+                        stat.games() < minOccurrences))
+                .toList();
+    }
+
+    private Page page(ParticipantView view) {
+        var runes = view.runes();
+        return new Page(runes.primaryStyle(), runes.subStyle(), runes.perks());
+    }
+
+    private static int compareCounts(Counts left, Counts right) {
+        int compared = Integer.compare(right.games, left.games);
+        if (compared != 0) return compared;
+        return Long.compare((long) right.wins * left.games, (long) left.wins * right.games);
+    }
+
+    private static int comparePages(Page left, Page right) {
+        int compared = Integer.compare(left.primaryStyle(), right.primaryStyle());
+        if (compared != 0) return compared;
+        compared = Integer.compare(left.subStyle(), right.subStyle());
+        return compared != 0 ? compared : compareSequences(left.perks(), right.perks());
     }
 
     private List<SequenceStat> sequences(List<ParticipantView> views,
@@ -129,6 +263,12 @@ public final class KnowledgeAggregator {
     }
 
     private record Group(int championId, String position) {}
+
+    private record Page(int primaryStyle, int subStyle, List<Integer> perks) {
+        private Page {
+            perks = List.copyOf(perks);
+        }
+    }
 
     private static final class Counts {
         private int games;
