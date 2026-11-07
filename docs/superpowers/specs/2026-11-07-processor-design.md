@@ -19,6 +19,7 @@ Para cada `(patch, championId, position)` com amostra suficiente:
 - **Caminho de build:** os 3 primeiros **itens completos** em ordem de compra (sequência exata), com contagem e taxa de vitória; e a frequência de cada item completo por posição na ordem (1º, 2º, 3º, 4º+).
 - **Ordem de skills:** as sequências dos 9 primeiros pontos (ex.: `Q E W Q Q R Q E Q`) e a prioridade de evolução derivada (ex.: `R > Q > E > W`), com contagem e taxa de vitória.
 - **Taxa de vitória por item completo** (aparecer nos itens finais).
+- **Árvore de compras (pedido do usuário):** a sequência de compras de **todo item de 1000 de ouro ou mais** (componentes caros, botas de nível 2 e itens completos), na ordem em que o jogador comprou, até o 3º item completo. Para cada item completo, os componentes ≥ 1000 mais comprados antes dele e em que ordem. Objetivo: o `live-builds` saber o que vale comprar com o ouro que o jogador tem na volta à base, sem deixá-lo parado na rota sem gastar. Evoluções pela missão de rota (ex.: `3006` → `3172`) contam como o item base.
 
 Também na v1, como **base para a versão situacional**: guardar amostras de decisão `(patch, championId, position, situação resumida, item comprado, venceu)` para cada compra de item completo. A situação resumida vem de `frames[event.frame]` (estado dos 10 jogadores no minuto anterior ao evento) e tem: minuto, diferença de ouro da equipe, diferença de nível com o oponente de rota, abates por time, e a mistura de dano físico/mágico do time inimigo (dos dados finais da partida). A v1 só guarda essas amostras; não as consome.
 
@@ -72,7 +73,7 @@ Publicação: um **pacote de conhecimento por patch** (JSON) servido por HTTP, m
 1. v1 simples (estatística por campeão e rota) + guardar amostras de decisão para a v2 situacional. O usuário não escolheu; a v1 situacional pediria muito mais partidas do que a chave pessoal coleta.
 2. Recalcular por patch a cada 1 h, em vez de processamento incremental.
 3. Amostra mínima 30 partidas por entrada e 10 por sequência.
-4. Item completo pela árvore do Data Dragon (sem `into`, ≥ 2000, sem botas e consumíveis).
+4. Dois recortes de item: "item completo" (sem `into`, ≥ 2000, sem botas e consumíveis) para o caminho de build dos 3 primeiros itens; e, por pedido do usuário, a árvore de compras com **todo item ≥ 1000** (inclui componentes caros e botas) para orientar o gasto de ouro. Evoluções pela missão de rota contam como o item base (via `from` do Data Dragon).
 5. Stack igual aos outros serviços: Spring Boot 4.1, Java 25, hexagonal com `ArchitectureTest`, Spring Data MongoDB, OpenFeign (Data Dragon), JUnit/Mockito/WireMock/JaCoCo, Mongo embarcado nos testes. Porta 8082, context path `/processor`.
 6. Leitura direta da coleção `matches` do banco `yoursummoner_collector` (só leitura), pelo contrato versionado. Partidas com `schemaVersion` diferente de 2 são ignoradas com log (a v1, que repetia a situação em cada evento, não é mais produzida).
 
