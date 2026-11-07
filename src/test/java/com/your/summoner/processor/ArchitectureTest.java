@@ -13,7 +13,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 class ArchitectureTest {
   private static final String BASE_PACKAGE = "com.your.summoner.processor";
   @Test void domainRemainsFrameworkIndependent() {
-    ArchRule rule = noClasses().that().resideInAPackage("..domain..").should().dependOnClassesThat().resideInAnyPackage("org.springframework..", "lombok..", "org.mapstruct..", "com.fasterxml..", "jakarta..", "..application..", "..infrastructure..").allowEmptyShould(true);
+    ArchRule rule = noClasses().that().resideInAPackage("..domain..").should().dependOnClassesThat().resideInAnyPackage("org.springframework..", "lombok..", "org.mapstruct..", "com.fasterxml..", "tools.jackson..", "jakarta..", "..application..", "..infrastructure..").allowEmptyShould(true);
     rule.check(new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS).importPackages(BASE_PACKAGE));
   }
   @Test void applicationDoesNotDependOnInfrastructureOrSpringOutsideStereotypes() {
