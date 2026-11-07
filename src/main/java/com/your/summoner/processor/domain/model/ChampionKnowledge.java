@@ -11,7 +11,7 @@ public record ChampionKnowledge(String patch, int championId, String position,
                                 List<SequenceStat> purchaseTree,
                                 Map<Integer, List<SequenceStat>> componentsBefore,
                                 List<SequenceStat> skillOrders, String skillPriority,
-                                List<ItemStat> itemWinRates, boolean lowSample,
+                                List<ItemStat> itemWinRates, Boolean lowSample,
                                 List<KeystoneStat> keystones, List<RunePageStat> runePages,
                                 List<SpellPairStat> summonerSpells, PrimaryRecommendation primary) {
     public ChampionKnowledge {
@@ -24,20 +24,10 @@ public record ChampionKnowledge(String patch, int championId, String position,
         componentsBefore = Collections.unmodifiableMap(components);
         skillOrders = List.copyOf(skillOrders);
         itemWinRates = List.copyOf(itemWinRates);
-        keystones = List.copyOf(keystones);
-        runePages = List.copyOf(runePages);
-        summonerSpells = List.copyOf(summonerSpells);
-    }
-
-    public ChampionKnowledge(String patch, int championId, String position,
-                             int games, int wins, List<SequenceStat> starting,
-                             List<SequenceStat> boots, List<SequenceStat> buildPaths,
-                             List<SequenceStat> purchaseTree,
-                             Map<Integer, List<SequenceStat>> componentsBefore,
-                             List<SequenceStat> skillOrders, String skillPriority,
-                             List<ItemStat> itemWinRates) {
-        this(patch, championId, position, games, wins, starting, boots, buildPaths, purchaseTree,
-                componentsBefore, skillOrders, skillPriority, itemWinRates,
-                false, List.of(), List.of(), List.of(), null);
+        lowSample = lowSample != null && lowSample;
+        // v1 documents already stored in Mongo lack the v2 lists; read them as empty.
+        keystones = keystones == null ? List.of() : List.copyOf(keystones);
+        runePages = runePages == null ? List.of() : List.copyOf(runePages);
+        summonerSpells = summonerSpells == null ? List.of() : List.copyOf(summonerSpells);
     }
 }

@@ -183,6 +183,67 @@ class KnowledgeAggregatorTest {
     }
 
     @Test
+    void ownNullFallsBackToGeneral() {
+        var perks = List.of(8010, 9111, 9104, 8299, 8444, 8242);
+        var other = List.of(8437, 8446, 8444, 8451, 8347, 8304);
+        var result = top(Stream.of(
+                runeView("TOP", true, List.of(), List.of(3153, 3078), List.of(4, 12), 8000, 8400, perks, null),
+                runeView("TOP", true, List.of(), List.of(3153, 3078, 3053), List.of(4, 12), 8400, 8000, other, null)),
+                1, 1, 2);
+
+        var page = page(result, 8010);
+        assertEquals(new SequenceStat(List.of(3153, 3078, 3053), 1, 1), page.buildPath());
+        assertFalse(page.buildPathLowSample());
+    }
+
+    @Test
+    void ownAboveMinimumKeepsOwnEvenIfGeneralIsBigger() {
+        var perks = List.of(8010, 9111, 9104, 8299, 8444, 8242);
+        var other = List.of(8437, 8446, 8444, 8451, 8347, 8304);
+        var views = new ArrayList<ParticipantView>();
+        for (int i = 0; i < 3; i++) {
+            views.add(runeView("TOP", true, List.of(), List.of(3078, 3153, 3053), List.of(4, 12), 8000, 8400, perks, null));
+        }
+        for (int i = 0; i < 4; i++) {
+            views.add(runeView("TOP", true, List.of(), List.of(3153, 3078, 3053), List.of(4, 12), 8400, 8000, other, null));
+        }
+
+        var page = page(top(views.stream(), 1, 3, 2), 8010);
+        assertEquals(new SequenceStat(List.of(3078, 3153, 3053), 3, 3), page.buildPath());
+        assertFalse(page.buildPathLowSample());
+    }
+
+    @Test
+    void noThreeItemGamesGivesNullBuildPath() {
+        var perks = List.of(8010, 9111, 9104, 8299, 8444, 8242);
+        var result = top(Stream.of(
+                runeView("TOP", true, List.of(), List.of(3153, 3078), List.of(4, 12), 8000, 8400, perks, null)),
+                1, 1, 2);
+
+        var page = page(result, 8010);
+        assertNull(page.buildPath());
+        assertFalse(page.buildPathLowSample());
+    }
+
+    @Test
+    void statPerksDoNotLeakBetweenPagesOfSameKeystone() {
+        var chosen = List.of(8010, 9111, 9104, 8299, 8444, 8242);
+        var notChosen = List.of(8010, 9101, 9104, 8299, 8444, 8242);
+        var mine = new MatchRecord.StatPerks(5005, 5008, 5011);
+        var foreign = new MatchRecord.StatPerks(5008, 5001, 5002);
+        var result = top(Stream.of(
+                pageView(true, 8000, 8400, chosen, mine),
+                pageView(true, 8000, 8400, chosen),
+                pageView(true, 8000, 8400, chosen),
+                pageView(true, 8000, 8400, notChosen, foreign),
+                pageView(true, 8000, 8400, notChosen, foreign)), 1, 1, 1);
+
+        var page = result.runePages().getFirst();
+        assertEquals(chosen, page.perks());
+        assertEquals(mine, page.statPerks());
+    }
+
+    @Test
     void blankPositionOnlyInAnyWithPrimary() {
         var result = aggregator.aggregate("16.1", Stream.of(runeView(" ", true, List.of(), List.of(),
                 List.of(12, 4), 8000, 8400,

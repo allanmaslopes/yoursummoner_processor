@@ -46,7 +46,7 @@ public final class MongoKnowledgeStore implements KnowledgeStore {
                 .set("matches", snapshot.matches())
                 .set("ignoredBySchema", snapshot.ignoredBySchema())
                 .set("durationMillis", snapshot.durationMillis())
-                .set("formatVersion", 1);
+                .set("formatVersion", 2);
         // A failed swap can have reached Mongo; retain staging rather than risk dropping active data.
         var previous = mongo.findAndModify(patchQuery(snapshot.patch()), update,
                 FindAndModifyOptions.options().upsert(true).returnNew(false), Document.class, META);

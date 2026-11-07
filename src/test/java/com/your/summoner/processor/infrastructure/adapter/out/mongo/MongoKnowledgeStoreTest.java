@@ -8,7 +8,14 @@ import com.mongodb.event.CommandStartedEvent;
 import com.mongodb.event.CommandSucceededEvent;
 import com.your.summoner.processor.application.port.out.KnowledgeStore.Snapshot;
 import com.your.summoner.processor.application.service.RecomputeService;
+import com.your.summoner.processor.domain.model.ChampionKnowledge;
+import com.your.summoner.processor.domain.model.KeystoneStat;
+import com.your.summoner.processor.domain.model.MatchRecord;
 import com.your.summoner.processor.domain.model.PatchVersion;
+import com.your.summoner.processor.domain.model.PrimaryRecommendation;
+import com.your.summoner.processor.domain.model.RunePageStat;
+import com.your.summoner.processor.domain.model.SequenceStat;
+import com.your.summoner.processor.domain.model.SpellPairStat;
 import com.your.summoner.processor.infrastructure.adapter.out.collector.MongoMatchSource;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -96,6 +104,55 @@ class MongoKnowledgeStoreTest {
         assertThat(metadata().getString("activeCollection")).isNotEqualTo(oldMeta.getString("activeCollection"));
         assertThat(metadata().getString("activeDecisionCollection"))
                 .isNotEqualTo(oldMeta.getString("activeDecisionCollection"));
+    }
+
+    @Test void v2RoundTrip() {
+        var sequence = new SequenceStat(List.of(3153, 3078, 3053), 2, 1);
+        var perks = List.of(8010, 9111, 9104, 8299, 8444, 8242);
+        var full = new ChampionKnowledge(PATCH.toString(), 1, "TOP", 5, 3,
+                List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
+                true, List.of(new KeystoneStat(8010, 5, 3, true)),
+                List.of(new RunePageStat(8010, 8000, 8400, perks, new MatchRecord.StatPerks(5005, 5008, 5011),
+                                5, 3, true, sequence, true),
+                        new RunePageStat(8437, 8400, 8000, perks, null, 1, 0, true, null, false)),
+                List.of(new SpellPairStat(List.of(4, 12), 5, 3, true)),
+                new PrimaryRecommendation(8010, List.of(4, 12), true));
+        var empty = new ChampionKnowledge(PATCH.toString(), 2, "TOP", 0, 0,
+                List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
+                false, List.of(), List.of(), List.of(), null);
+        var noSpells = new ChampionKnowledge(PATCH.toString(), 3, "TOP", 1, 1,
+                List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
+                true, List.of(new KeystoneStat(8437, 1, 1, true)), List.of(), List.of(),
+                new PrimaryRecommendation(8437, List.of(), true));
+        var base = snapshot(PATCH, 1);
+        var snapshot = new Snapshot(PATCH, base.computedAt(), 5, 0, 10, List.of(full, empty, noSpells),
+                base.decisions());
+
+        store.publish(snapshot);
+
+        assertThat(store.find(PATCH)).contains(snapshot);
+        assertThat(metadata().get("formatVersion")).isEqualTo(2);
+    }
+
+    @Test void readsV1DocumentWithoutV2Fields() {
+        var base = snapshot(PATCH, 1);
+        store.publish(new Snapshot(PATCH, base.computedAt(), 5, 0, 10, List.of(), List.of()));
+        mongo.getCollection(metadata().getString("activeCollection")).insertOne(new Document()
+                .append("patch", PATCH.toString()).append("championId", 7).append("position", "TOP")
+                .append("games", 30).append("wins", 20)
+                .append("starting", List.of()).append("boots", List.of()).append("buildPaths", List.of())
+                .append("purchaseTree", List.of()).append("componentsBefore", new Document())
+                .append("skillOrders", List.of()).append("skillPriority", "R > Q > W > E")
+                .append("itemWinRates", List.of()));
+
+        var entry = store.find(PATCH).orElseThrow().entries().getFirst();
+
+        assertThat(entry.championId()).isEqualTo(7);
+        assertThat(entry.keystones()).isEmpty();
+        assertThat(entry.runePages()).isEmpty();
+        assertThat(entry.summonerSpells()).isEmpty();
+        assertThat(entry.primary()).isNull();
+        assertThat(entry.lowSample()).isFalse();
     }
 
     @Test void oldCollectionsAreDropped() {

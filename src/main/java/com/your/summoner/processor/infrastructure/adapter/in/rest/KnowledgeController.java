@@ -30,7 +30,7 @@ public class KnowledgeController {
         String etag = etag(value.computedAt().toString());
         // Weak-compares If-None-Match (W/, lists, *); Tomcat gzips only responses without a strong ETag.
         if (isWildcard(request) || request.checkNotModified(etag)) return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(etag).build();
-        return ResponseEntity.ok().eTag(etag).body(new KnowledgePackage(1, value.patch().toString(),
+        return ResponseEntity.ok().eTag(etag).body(new KnowledgePackage(2, value.patch().toString(),
                 value.computedAt().toString(), value.matches(),
                 value.entries().stream().map(KnowledgeResponse::from).toList()));
     }

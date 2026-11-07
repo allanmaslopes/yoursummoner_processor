@@ -1,10 +1,10 @@
 # Formato do pacote de conhecimento
 
-`GET /processor/knowledge/{patch}` retorna JSON da versão 1. O patch usa `major.minor`, por exemplo `16.22`. Um patch inexistente retorna 404 como `application/problem+json`.
+`GET /processor/knowledge/{patch}` retorna JSON da versão 2 (a versão 2 só acrescenta campos; todos os da versão 1 continuam). O patch usa `major.minor`, por exemplo `16.22`. Um patch inexistente retorna 404 como `application/problem+json`.
 
 | Campo | Tipo | Significado |
 |---|---|---|
-| `formatVersion` | número inteiro | Versão do contrato; atualmente `1`. |
+| `formatVersion` | número inteiro | Versão do contrato; atualmente `2`. |
 | `patch` | string | Patch das partidas agregadas. |
 | `computedAt` | string | Instante do cálculo em ISO 8601 UTC. |
 | `matches` | número inteiro | Quantidade de partidas lidas para o patch. |
@@ -28,6 +28,15 @@ Cada entrada contém:
 | `skillOrders` | array de sequências | Ordem dos primeiros pontos de habilidade. |
 | `skillPriority` | string | Prioridade de habilidades inferida da sequência mais comum. |
 | `itemWinRates` | array de itens | Estatísticas dos itens completos. |
+| `lowSample` | booleano | `true` quando `games` < `processor.min-games` (30). |
+| `keystones` | array | Runas principais mais frequentes: `perk`, `games`, `wins`, `winRate`, `lowSample`. |
+| `runePages` | array | Uma página por runa principal listada (a página completa mais frequente dela). |
+| `summonerSpells` | array | Duplas de feitiços mais frequentes: `sequence` (menor id primeiro), `games`, `wins`, `winRate`, `lowSample`. |
+| `primary` | objeto ou `null` | Recomendação principal: `keystone`, `summonerSpells`, `summonerSpellsLowSample`. |
+
+Cada elemento de `runePages` tem `keystone`, `primaryStyle`, `subStyle`, `perks` (6 runas na ordem dos slots; a primeira é a runa principal), `statPerks` (`{offense, flex, defense}` ou `null` quando nenhuma partida da página guardou fragmentos), `games`, `wins`, `winRate`, `lowSample`, `buildPath` (`{sequence, games, wins, winRate}` ou `null`) e `buildPathLowSample`. `buildPath` é o caminho de itens mais frequente de quem usou a runa principal; se ele tiver menos de `processor.min-occurrences` (10) partidas e o caminho geral tiver mais, usa o geral; é `null` só quando nenhuma partida da entrada tem três itens completos. `primary.keystone` aponta para a entrada de `runePages` a usar.
+
+`lowSample` marca confiança, não esconde dados: nas partes novas vale `games` < `processor.min-occurrences` (10) e, na entrada, `games` < `processor.min-games` (30). Há entrada para toda combinação campeão e posição com pelo menos uma partida, e `primary` só é `null` quando nenhuma partida da entrada tem página de runas completa (6 runas), ou seja, sempre há recomendação quando existe dado de runas. Os campos da versão 1 mantêm os filtros de amostra de antes. Quem lê a versão 1 passa a receber também entradas com menos de `processor.min-games` partidas, marcadas com `lowSample` (antes eram filtradas).
 
 Cada sequência tem `sequence` (array de identificadores de itens ou habilidades), `games`, `wins` e `winRate`. Cada item tem `itemId`, `games`, `wins` e `winRate`. As taxas são números arredondados a quatro casas com HALF_UP; denominador zero resulta em `0.0000`.
 

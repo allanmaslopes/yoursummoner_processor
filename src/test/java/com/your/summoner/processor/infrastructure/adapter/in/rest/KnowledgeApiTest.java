@@ -7,8 +7,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.your.summoner.processor.application.port.out.KnowledgeStore;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
 import com.your.summoner.processor.domain.model.ItemStat;
+import com.your.summoner.processor.domain.model.KeystoneStat;
+import com.your.summoner.processor.domain.model.MatchRecord;
+import com.your.summoner.processor.domain.model.PrimaryRecommendation;
+import com.your.summoner.processor.domain.model.RunePageStat;
 import com.your.summoner.processor.domain.model.PatchVersion;
 import com.your.summoner.processor.domain.model.SequenceStat;
+import com.your.summoner.processor.domain.model.SpellPairStat;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
@@ -41,7 +46,7 @@ class KnowledgeApiTest {
         var first = mvc.perform(get("/processor/knowledge/16.22").contextPath("/processor"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.formatVersion").value(1))
+                .andExpect(jsonPath("$.formatVersion").value(2))
                 .andExpect(jsonPath("$.patch").value("16.22"))
                 .andExpect(jsonPath("$.computedAt").value(COMPUTED_AT.toString()))
                 .andExpect(jsonPath("$.matches").value(42))
@@ -82,6 +87,20 @@ class KnowledgeApiTest {
                         .header(HttpHeaders.IF_NONE_MATCH, etag))
                 .andExpect(status().isOk()).andReturn();
         assertThat(changed.getResponse().getHeader(HttpHeaders.ETAG)).isNotBlank().isNotEqualTo(etag);
+    }
+
+    @Test
+    void v2FieldsSerialized() throws Exception {
+        mvc.perform(get("/processor/knowledge/16.22").contextPath("/processor"))
+                .andExpect(jsonPath("$.formatVersion").value(2))
+                .andExpect(jsonPath("$.entries[0].primary.keystone").value(8010))
+                .andExpect(jsonPath("$.entries[0].runePages[0].statPerks.offense").value(5005))
+                .andExpect(jsonPath("$.entries[0].runePages[0].buildPath.sequence[0]").value(1055))
+                .andExpect(jsonPath("$.entries[0].lowSample").value(true))
+                .andExpect(jsonPath("$.entries[0].summonerSpells[0].sequence[1]").value(12))
+                .andExpect(jsonPath("$.entries[0].keystones[0].winRate").value(0.6667))
+                .andExpect(jsonPath("$.entries[1].primary").value(org.hamcrest.Matchers.nullValue()))
+                .andExpect(jsonPath("$.entries[1].lowSample").value(false));
     }
 
     @Test
@@ -135,11 +154,17 @@ class KnowledgeApiTest {
         var entry = new ChampionKnowledge(patch.toString(), 1, "TOP", 3, 2,
                 List.of(sequence), List.of(sequence), List.of(sequence), List.of(sequence),
                 Map.of(3031, List.of(sequence)), List.of(sequence), "R > Q > W > E",
-                List.of(new ItemStat(3031, 3, 2)));
+                List.of(new ItemStat(3031, 3, 2)), true,
+                List.of(new KeystoneStat(8010, 3, 2, true)),
+                List.of(new RunePageStat(8010, 8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242),
+                        new MatchRecord.StatPerks(5005, 5008, 5011), 3, 2, true, sequence, true)),
+                List.of(new SpellPairStat(List.of(4, 12), 3, 2, true)),
+                new PrimaryRecommendation(8010, List.of(4, 12), true));
         var zeroSequence = new SequenceStat(List.of(1055), 0, 0);
         var zeroEntry = new ChampionKnowledge(patch.toString(), 2, "TOP", 0, 0,
                 List.of(zeroSequence), List.of(), List.of(), List.of(), Map.of(), List.of(),
-                "R > Q > W > E", List.of(new ItemStat(3031, 0, 0)));
+                "R > Q > W > E", List.of(new ItemStat(3031, 0, 0)),
+                false, List.of(), List.of(), List.of(), null);
         return new KnowledgeStore.Snapshot(patch, computedAt, 42, 3, 125, List.of(entry, zeroEntry), List.of());
     }
 

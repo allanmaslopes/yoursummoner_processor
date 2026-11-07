@@ -38,7 +38,7 @@ public final class RecomputeFixtures {
     public static Snapshot snapshot(PatchVersion patch, int championId) {
         var entry = new ChampionKnowledge(patch.toString(), championId, "TOP", 30, 20,
                 List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(),
-                "R > Q > W > E", List.of());
+                "R > Q > W > E", List.of(), false, List.of(), List.of(), List.of(), null);
         var decision = new Decision(championId, "TOP", new DecisionSample(10, 3031, 500, 1, 3, 2, true));
         return new Snapshot(patch, Instant.parse("2026-11-07T12:00:00Z"), 30, 2, 25,
                 List.of(entry), List.of(decision));
