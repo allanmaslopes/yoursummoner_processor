@@ -13,3 +13,7 @@ Stack: OpenFeign, MongoDB, JUnit/Mockito/WireMock/ArchUnit/JaCoCo. Use o JDK 25 
 - Não comite segredos ou `.env`; configure `MONGODB_URI` e `COLLECTOR_MONGODB_URI` por ambiente.
 - No Windows, o Surefire e o plugin Spring Boot definem `jdk.net.unixdomain.tmpdir` para evitar falhas de loopback do JDK.
 - Siga o plano e as instruções de desenvolvimento aplicáveis à sessão.
+
+## Ferramentas do workspace
+
+Scripts de rotina em `D:\Workspace\Scripts\yoursummoner` (ver `README.md` lá): `verify.ps1 -Repo <repo>` (build e testes com resumo), `stack.ps1 up|down|status` (Mongo, API, coletor, processor), `collector-check.ps1`, `board.ps1` (quadro). JDK 25 em `D:\Workspace\Languages-Frameworks\jdk-25.0.4.1+1`, Maven em `D:\Workspace\Languages-Frameworkspache-maven-3.10.0`. Agente delegado não roda git.
