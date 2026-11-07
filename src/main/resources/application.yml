@@ -1,0 +1,37 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /processor
+  error:
+    include-stacktrace: never
+spring:
+  application:
+    name: yoursummoner-processor
+  threads:
+    virtual:
+      enabled: true
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://127.0.0.1:27017/yoursummoner_processor}
+  mvc:
+    problemdetails:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
+processor:
+  source:
+    uri: ${COLLECTOR_MONGODB_URI:mongodb://127.0.0.1:27017/yoursummoner_collector}
+    collection: matches
+  min-games: 30
+  min-occurrences: 10
+  top-n: 5
+  cron: "0 15 * * * *"
+  enabled: true
+
+logging:
+  level:
+    com.your.summoner.processor: INFO

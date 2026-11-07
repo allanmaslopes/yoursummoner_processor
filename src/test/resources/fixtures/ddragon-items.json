@@ -1,0 +1,2514 @@
+{
+    "type":  "item",
+    "version":  "16.22.1",
+    "basic":  {
+                  "name":  "",
+                  "rune":  {
+                               "isrune":  false,
+                               "tier":  1,
+                               "type":  "red"
+                           },
+                  "gold":  {
+                               "base":  0,
+                               "total":  0,
+                               "sell":  0,
+                               "purchasable":  false
+                           },
+                  "group":  "",
+                  "description":  "",
+                  "colloq":  ";",
+                  "plaintext":  "",
+                  "consumed":  false,
+                  "stacks":  1,
+                  "depth":  1,
+                  "consumeOnFull":  false,
+                  "from":  [
+
+                           ],
+                  "into":  [
+
+                           ],
+                  "specialRecipe":  0,
+                  "inStore":  true,
+                  "hideFromAll":  false,
+                  "requiredChampion":  "",
+                  "requiredAlly":  "",
+                  "stats":  {
+                                "FlatHPPoolMod":  0,
+                                "rFlatHPModPerLevel":  0,
+                                "FlatMPPoolMod":  0,
+                                "rFlatMPModPerLevel":  0,
+                                "PercentHPPoolMod":  0,
+                                "PercentMPPoolMod":  0,
+                                "FlatHPRegenMod":  0,
+                                "rFlatHPRegenModPerLevel":  0,
+                                "PercentHPRegenMod":  0,
+                                "FlatMPRegenMod":  0,
+                                "rFlatMPRegenModPerLevel":  0,
+                                "PercentMPRegenMod":  0,
+                                "FlatArmorMod":  0,
+                                "rFlatArmorModPerLevel":  0,
+                                "PercentArmorMod":  0,
+                                "rFlatArmorPenetrationMod":  0,
+                                "rFlatArmorPenetrationModPerLevel":  0,
+                                "rPercentArmorPenetrationMod":  0,
+                                "rPercentArmorPenetrationModPerLevel":  0,
+                                "FlatPhysicalDamageMod":  0,
+                                "rFlatPhysicalDamageModPerLevel":  0,
+                                "PercentPhysicalDamageMod":  0,
+                                "FlatMagicDamageMod":  0,
+                                "rFlatMagicDamageModPerLevel":  0,
+                                "PercentMagicDamageMod":  0,
+                                "FlatMovementSpeedMod":  0,
+                                "rFlatMovementSpeedModPerLevel":  0,
+                                "PercentMovementSpeedMod":  0,
+                                "rPercentMovementSpeedModPerLevel":  0,
+                                "FlatAttackSpeedMod":  0,
+                                "PercentAttackSpeedMod":  0,
+                                "rPercentAttackSpeedModPerLevel":  0,
+                                "rFlatDodgeMod":  0,
+                                "rFlatDodgeModPerLevel":  0,
+                                "PercentDodgeMod":  0,
+                                "FlatCritChanceMod":  0,
+                                "rFlatCritChanceModPerLevel":  0,
+                                "PercentCritChanceMod":  0,
+                                "FlatCritDamageMod":  0,
+                                "rFlatCritDamageModPerLevel":  0,
+                                "PercentCritDamageMod":  0,
+                                "FlatBlockMod":  0,
+                                "PercentBlockMod":  0,
+                                "FlatSpellBlockMod":  0,
+                                "rFlatSpellBlockModPerLevel":  0,
+                                "PercentSpellBlockMod":  0,
+                                "FlatEXPBonus":  0,
+                                "PercentEXPBonus":  0,
+                                "rPercentCooldownMod":  0,
+                                "rPercentCooldownModPerLevel":  0,
+                                "rFlatTimeDeadMod":  0,
+                                "rFlatTimeDeadModPerLevel":  0,
+                                "rPercentTimeDeadMod":  0,
+                                "rPercentTimeDeadModPerLevel":  0,
+                                "rFlatGoldPer10Mod":  0,
+                                "rFlatMagicPenetrationMod":  0,
+                                "rFlatMagicPenetrationModPerLevel":  0,
+                                "rPercentMagicPenetrationMod":  0,
+                                "rPercentMagicPenetrationModPerLevel":  0,
+                                "FlatEnergyRegenMod":  0,
+                                "rFlatEnergyRegenModPerLevel":  0,
+                                "FlatEnergyPoolMod":  0,
+                                "rFlatEnergyModPerLevel":  0,
+                                "PercentLifeStealMod":  0,
+                                "PercentSpellVampMod":  0
+                            },
+                  "tags":  [
+
+                           ],
+                  "maps":  {
+                               "1":  true,
+                               "8":  true,
+                               "10":  true,
+                               "12":  true
+                           }
+              },
+    "data":  {
+                 "1001":  {
+                              "name":  "Botas",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e25\u003c/attention\u003e de Velocidade de Movimento\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";boot",
+                              "plaintext":  "Aumenta levemente a Velocidade de Movimento",
+                              "into":  [
+                                           "3005",
+                                           "3047",
+                                           "3008",
+                                           "3006",
+                                           "3009",
+                                           "3010",
+                                           "3020",
+                                           "3111",
+                                           "3117",
+                                           "3158"
+                                       ],
+                              "image":  {
+                                            "full":  "1001.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  0,
+                                            "y":  0,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  300,
+                                           "purchasable":  true,
+                                           "total":  300,
+                                           "sell":  210
+                                       },
+                              "tags":  [
+                                           "Boots"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatMovementSpeedMod":  25
+                                        }
+                          },
+                 "1042":  {
+                              "name":  "Adaga",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e10%\u003c/attention\u003e de Velocidade de Ataque\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";dagger",
+                              "plaintext":  "Aumenta levemente a Velocidade de Ataque",
+                              "into":  [
+                                           "1043",
+                                           "3086",
+                                           "2510",
+                                           "3006",
+                                           "3046",
+                                           "3051",
+                                           "3073",
+                                           "3131",
+                                           "3144",
+                                           "6631",
+                                           "6675",
+                                           "6677"
+                                       ],
+                              "image":  {
+                                            "full":  "1042.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  336,
+                                            "y":  48,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  250,
+                                           "purchasable":  true,
+                                           "total":  250,
+                                           "sell":  175
+                                       },
+                              "tags":  [
+                                           "AttackSpeed"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "PercentAttackSpeedMod":  0.1
+                                        }
+                          },
+                 "1036":  {
+                              "name":  "Espada Longa",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e10\u003c/attention\u003e de Dano de Ataque\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";long sword;long;sword",
+                              "plaintext":  "Aumenta levemente o Dano de Ataque",
+                              "into":  [
+                                           "1053",
+                                           "4003",
+                                           "6701",
+                                           "2015",
+                                           "2019",
+                                           "2021",
+                                           "3077",
+                                           "6670",
+                                           "3133",
+                                           "2517",
+                                           "323004",
+                                           "3142",
+                                           "3004",
+                                           "2523",
+                                           "3032",
+                                           "3035",
+                                           "3044",
+                                           "3051",
+                                           "3155",
+                                           "6690",
+                                           "3123",
+                                           "3134",
+                                           "6699",
+                                           "6671",
+                                           "6692"
+                                       ],
+                              "image":  {
+                                            "full":  "1036.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  96,
+                                            "y":  48,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  350,
+                                           "purchasable":  true,
+                                           "total":  350,
+                                           "sell":  245
+                                       },
+                              "tags":  [
+                                           "Damage",
+                                           "Lane"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  10
+                                        }
+                          },
+                 "1037":  {
+                              "name":  "Picareta",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e25\u003c/attention\u003e de Dano de Ataque\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";pickaxe",
+                              "plaintext":  "Aumenta moderadamente o Dano de Ataque",
+                              "into":  [
+                                           "667666",
+                                           "3071",
+                                           "6333",
+                                           "3031",
+                                           "3153",
+                                           "6701",
+                                           "2020",
+                                           "2517",
+                                           "3087",
+                                           "6695",
+                                           "2523",
+                                           "3053",
+                                           "3072",
+                                           "3124",
+                                           "3181",
+                                           "3139",
+                                           "3161",
+                                           "6029",
+                                           "6035",
+                                           "6673",
+                                           "6676",
+                                           "6692"
+                                       ],
+                              "image":  {
+                                            "full":  "1037.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  144,
+                                            "y":  48,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  875,
+                                           "purchasable":  true,
+                                           "total":  875,
+                                           "sell":  613
+                                       },
+                              "tags":  [
+                                           "Damage"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  25
+                                        }
+                          },
+                 "1038":  {
+                              "name":  "Espada G. p. C.",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e40\u003c/attention\u003e de Dano de Ataque\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";bf;gpc;espadÃ£o;espadona",
+                              "plaintext":  "Aumenta drasticamente o Dano de Ataque",
+                              "into":  [
+                                           "3031",
+                                           "3026",
+                                           "3032",
+                                           "3072",
+                                           "3095",
+                                           "4403",
+                                           "6671"
+                                       ],
+                              "image":  {
+                                            "full":  "1038.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  192,
+                                            "y":  48,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  1300,
+                                           "purchasable":  true,
+                                           "total":  1300,
+                                           "sell":  910
+                                       },
+                              "tags":  [
+                                           "Damage"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  40
+                                        }
+                          },
+                 "2003":  {
+                              "name":  "PoÃ§Ã£o de Vida",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003cactive\u003eConsumir\u003c/active\u003e\u003cbr\u003eRestaura \u003chealing\u003e120 de Vida\u003c/healing\u003e ao longo de 15s.\u003c/mainText\u003e",
+                              "colloq":  ";pot;potion;health potion",
+                              "plaintext":  "Consuma para restaurar Vida ao longo do tempo",
+                              "stacks":  5,
+                              "consumed":  true,
+                              "image":  {
+                                            "full":  "2003.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  288,
+                                            "y":  384,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  50,
+                                           "purchasable":  true,
+                                           "total":  50,
+                                           "sell":  20
+                                       },
+                              "tags":  [
+                                           "HealthRegen",
+                                           "Consumable",
+                                           "Lane",
+                                           "Jungle"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+
+                                        }
+                          },
+                 "3006":  {
+                              "name":  "Grevas do Berserker",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e30%\u003c/attention\u003e de Velocidade de Ataque\u003cbr\u003e\u003cattention\u003e45\u003c/attention\u003e de Velocidade de Movimento\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";greaves",
+                              "plaintext":  "Aprimora a Velocidade de Movimento e de Ataque",
+                              "from":  [
+                                           "1001",
+                                           "1042",
+                                           "1042"
+                                       ],
+                              "into":  [
+                                           "3172"
+                                       ],
+                              "image":  {
+                                            "full":  "3006.png",
+                                            "sprite":  "item3.png",
+                                            "group":  "item",
+                                            "x":  0,
+                                            "y":  96,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  300,
+                                           "purchasable":  true,
+                                           "total":  1100,
+                                           "sell":  770
+                                       },
+                              "tags":  [
+                                           "AttackSpeed",
+                                           "Boots"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatMovementSpeedMod":  45,
+                                            "PercentAttackSpeedMod":  0.3
+                                        },
+                              "depth":  2
+                          },
+                 "3172":  {
+                              "name":  "Grevas BÃ©licas",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e45%\u003c/attention\u003e de Velocidade de Ataque\u003cbr\u003e\u003cattention\u003e45\u003c/attention\u003e de Velocidade de Movimento\u003cbr\u003e\u003cattention\u003e5%\u003c/attention\u003e de Roubo de Vida\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";zephyr",
+                              "plaintext":  "Mobilidade e Tenacidade",
+                              "from":  [
+                                           "3006"
+                                       ],
+                              "image":  {
+                                            "full":  "3172.png",
+                                            "sprite":  "item4.png",
+                                            "group":  "item",
+                                            "x":  192,
+                                            "y":  48,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  0,
+                                           "purchasable":  true,
+                                           "total":  1100,
+                                           "sell":  770
+                                       },
+                              "tags":  [
+                                           "AttackSpeed",
+                                           "LifeSteal",
+                                           "NonbootsMovement"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  false,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatMovementSpeedMod":  45,
+                                            "PercentAttackSpeedMod":  0.45,
+                                            "PercentLifeStealMod":  0.05
+                                        },
+                              "depth":  3
+                          },
+                 "3031":  {
+                              "name":  "Gume do Infinito",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e75\u003c/attention\u003e de Dano de Ataque\u003cbr\u003e\u003cattention\u003e25%\u003c/attention\u003e de Chance de Acerto CrÃ­tico\u003cbr\u003e\u003cattention\u003e30%\u003c/attention\u003e de Dano de Acerto CrÃ­tico\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";ie;ei;infinity;edge",
+                              "plaintext":  "Aprimora drasticamente os acertos crÃ­ticos",
+                              "from":  [
+                                           "1038",
+                                           "1037",
+                                           "1018"
+                                       ],
+                              "image":  {
+                                            "full":  "3031.png",
+                                            "sprite":  "item3.png",
+                                            "group":  "item",
+                                            "x":  48,
+                                            "y":  144,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  725,
+                                           "purchasable":  true,
+                                           "total":  3500,
+                                           "sell":  2450
+                                       },
+                              "tags":  [
+                                           "CriticalStrike",
+                                           "Damage"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatCritChanceMod":  0.25,
+                                            "FlatPhysicalDamageMod":  75
+                                        },
+                              "depth":  2
+                          },
+                 "3047":  {
+                              "name":  "Botas Galvanizadas de AÃ§o",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e25\u003c/attention\u003e de Armadura\u003cbr\u003e\u003cattention\u003e45\u003c/attention\u003e de Velocidade de Movimento\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003cpassive\u003eBarricada\u003c/passive\u003e\u003cbr\u003eReduz o dano sofrido de Ataques em 10%.\u003c/mainText\u003e",
+                              "colloq":  ";plated steelcaps;",
+                              "plaintext":  "Aprimora a Velocidade de Movimento e reduz o dano de ataques bÃ¡sicos recebidos",
+                              "from":  [
+                                           "1001",
+                                           "1029"
+                                       ],
+                              "into":  [
+                                           "3174"
+                                       ],
+                              "image":  {
+                                            "full":  "3047.png",
+                                            "sprite":  "item3.png",
+                                            "group":  "item",
+                                            "x":  96,
+                                            "y":  192,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  600,
+                                           "purchasable":  true,
+                                           "total":  1200,
+                                           "sell":  840
+                                       },
+                              "tags":  [
+                                           "Armor",
+                                           "Boots"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatMovementSpeedMod":  45,
+                                            "FlatArmorMod":  25
+                                        },
+                              "effect":  {
+                                             "Effect1Amount":  "0.1"
+                                         },
+                              "depth":  2
+                          },
+                 "3074":  {
+                              "name":  "Hidra Raivosa",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e65\u003c/attention\u003e de Dano de Ataque\u003cbr\u003e\u003cattention\u003e15\u003c/attention\u003e de AceleraÃ§Ã£o de Habilidade\u003cbr\u003e\u003cattention\u003e12%\u003c/attention\u003e de Roubo de Vida\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003cpassive\u003eFenda\u003c/passive\u003e\u003cbr\u003eAtaques causam \u003cphysicalDamage\u003eDano FÃ­sico\u003c/physicalDamage\u003e a inimigos prÃ³ximos.\u003cactive\u003eCrescente Raivosa\u003c/active\u003e\u003cbr\u003eCausa \u003cphysicalDamage\u003eDano FÃ­sico\u003c/physicalDamage\u003e a inimigos ao seu redor. \u003cbr\u003eSeu Roubo de Vida se aplica a esse dano.\u003c/mainText\u003e",
+                              "colloq":  ";ravenous;hydra",
+                              "plaintext":  "Ataques corpo a corpo atingem inimigos prÃ³ximos, causando dano restaurando Vida",
+                              "from":  [
+                                           "3077",
+                                           "1053",
+                                           "3133"
+                                       ],
+                              "image":  {
+                                            "full":  "3074.png",
+                                            "sprite":  "item3.png",
+                                            "group":  "item",
+                                            "x":  240,
+                                            "y":  240,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  150,
+                                           "purchasable":  true,
+                                           "total":  3300,
+                                           "sell":  2310
+                                       },
+                              "tags":  [
+                                           "Damage",
+                                           "LifeSteal",
+                                           "CooldownReduction",
+                                           "OnHit",
+                                           "AbilityHaste"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  65,
+                                            "PercentLifeStealMod":  0.12
+                                        },
+                              "depth":  3
+                          },
+                 "3077":  {
+                              "name":  "Tiamat",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e25\u003c/attention\u003e de Dano de Ataque\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003cpassive\u003eFenda\u003c/passive\u003e\u003cbr\u003eAtaques causam \u003cphysicalDamage\u003eDano FÃ­sico\u003c/physicalDamage\u003e a inimigos prÃ³ximos.\u003cbr\u003e\u003cactive\u003eCrescente\u003c/active\u003e\u003cbr\u003eCausa \u003cphysicalDamage\u003eDano FÃ­sico\u003c/physicalDamage\u003e a inimigos ao seu redor.\u003c/mainText\u003e",
+                              "colloq":  ";tiamat",
+                              "plaintext":  "Ataques corpo a corpo atingem inimigos prÃ³ximos",
+                              "from":  [
+                                           "1036",
+                                           "1036"
+                                       ],
+                              "into":  [
+                                           "3074",
+                                           "3748",
+                                           "6698",
+                                           "6631"
+                                       ],
+                              "image":  {
+                                            "full":  "3077.png",
+                                            "sprite":  "item3.png",
+                                            "group":  "item",
+                                            "x":  384,
+                                            "y":  240,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  500,
+                                           "purchasable":  true,
+                                           "total":  1200,
+                                           "sell":  840
+                                       },
+                              "tags":  [
+                                           "Damage",
+                                           "OnHit"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  25
+                                        },
+                              "depth":  2
+                          },
+                 "1018":  {
+                              "name":  "Capa da Agilidade",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e15%\u003c/attention\u003e de Chance de Acerto CrÃ­tico\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";cloak;agility",
+                              "plaintext":  "Aumenta a Chance de Acerto CrÃ­tico",
+                              "into":  [
+                                           "123430",
+                                           "667666",
+                                           "3031",
+                                           "3086",
+                                           "6670",
+                                           "3033",
+                                           "3039",
+                                           "3508",
+                                           "3095",
+                                           "6676"
+                                       ],
+                              "image":  {
+                                            "full":  "1018.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  192,
+                                            "y":  0,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  600,
+                                           "purchasable":  true,
+                                           "total":  600,
+                                           "sell":  420
+                                       },
+                              "tags":  [
+                                           "CriticalStrike"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatCritChanceMod":  0.15
+                                        }
+                          },
+                 "1029":  {
+                              "name":  "CouraÃ§a de Pano",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e15\u003c/attention\u003e de Armadura\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";cloth;armor;cloth armor",
+                              "plaintext":  "Aumenta levemente a Armadura",
+                              "into":  [
+                                           "2421",
+                                           "2420",
+                                           "1031",
+                                           "323050",
+                                           "323190",
+                                           "2019",
+                                           "3193",
+                                           "3047",
+                                           "3024",
+                                           "3050",
+                                           "2524",
+                                           "3023",
+                                           "3076",
+                                           "3082",
+                                           "3105",
+                                           "3190"
+                                       ],
+                              "image":  {
+                                            "full":  "1029.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  384,
+                                            "y":  0,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  300,
+                                           "purchasable":  true,
+                                           "total":  300,
+                                           "sell":  210
+                                       },
+                              "tags":  [
+                                           "Armor"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatArmorMod":  15
+                                        }
+                          },
+                 "1053":  {
+                              "name":  "Cetro VampÃ­rico",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e15\u003c/attention\u003e de Dano de Ataque\u003cbr\u003e\u003cattention\u003e7%\u003c/attention\u003e de Roubo de Vida\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";vampiric;scepter",
+                              "plaintext":  "Ataques bÃ¡sicos restauram Vida",
+                              "from":  [
+                                           "1036"
+                                       ],
+                              "into":  [
+                                           "3153",
+                                           "3146",
+                                           "3072",
+                                           "3074",
+                                           "3139",
+                                           "4403"
+                                       ],
+                              "image":  {
+                                            "full":  "1053.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  0,
+                                            "y":  96,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  550,
+                                           "purchasable":  true,
+                                           "total":  900,
+                                           "sell":  630
+                                       },
+                              "tags":  [
+                                           "Damage",
+                                           "LifeSteal"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  15,
+                                            "PercentLifeStealMod":  0.07
+                                        },
+                              "depth":  2
+                          },
+                 "3133":  {
+                              "name":  "Martelo de Guerra de Caulfield",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e20\u003c/attention\u003e de Dano de Ataque\u003cbr\u003e\u003cattention\u003e10\u003c/attention\u003e de AceleraÃ§Ã£o de Habilidade\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  ";caufield\u0027s warhammer",
+                              "plaintext":  "Dano de Ataque e ReduÃ§Ã£o do Tempo de Recarga",
+                              "stacks":  0,
+                              "from":  [
+                                           "1036",
+                                           "2022",
+                                           "1036"
+                                       ],
+                              "into":  [
+                                           "6333",
+                                           "126697",
+                                           "6697",
+                                           "4402",
+                                           "3156",
+                                           "2517",
+                                           "323004",
+                                           "6693",
+                                           "3004",
+                                           "3508",
+                                           "3074",
+                                           "3179",
+                                           "6691",
+                                           "6609",
+                                           "6610",
+                                           "6632",
+                                           "6692",
+                                           "6694",
+                                           "6696"
+                                       ],
+                              "image":  {
+                                            "full":  "3133.png",
+                                            "sprite":  "item3.png",
+                                            "group":  "item",
+                                            "x":  48,
+                                            "y":  432,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  100,
+                                           "purchasable":  true,
+                                           "total":  1050,
+                                           "sell":  735
+                                       },
+                              "tags":  [
+                                           "Damage",
+                                           "CooldownReduction",
+                                           "AbilityHaste"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+                                            "FlatPhysicalDamageMod":  20
+                                        },
+                              "depth":  2
+                          },
+                 "2022":  {
+                              "name":  "PartÃ­cula Brilhante",
+                              "description":  "\u003cmainText\u003e\u003cstats\u003e\u003cattention\u003e5\u003c/attention\u003e de AceleraÃ§Ã£o de Habilidade\u003c/stats\u003e\u003cbr\u003e\u003cbr\u003e\u003c/mainText\u003e",
+                              "colloq":  "",
+                              "plaintext":  "",
+                              "into":  [
+                                           "2020",
+                                           "3024",
+                                           "3133",
+                                           "3802",
+                                           "3067",
+                                           "3057",
+                                           "3108",
+                                           "3158",
+                                           "4642",
+                                           "6660"
+                                       ],
+                              "image":  {
+                                            "full":  "2022.png",
+                                            "sprite":  "item0.png",
+                                            "group":  "item",
+                                            "x":  192,
+                                            "y":  432,
+                                            "w":  48,
+                                            "h":  48
+                                        },
+                              "gold":  {
+                                           "base":  250,
+                                           "purchasable":  true,
+                                           "total":  250,
+                                           "sell":  175
+                                       },
+                              "tags":  [
+                                           "CooldownReduction"
+                                       ],
+                              "maps":  {
+                                           "11":  true,
+                                           "12":  true,
+                                           "22":  false,
+                                           "30":  false,
+                                           "453":  true
+                                       },
+                              "stats":  {
+
+                                        }
+                          }
+             },
+    "groups":  [
+                   {
+                       "id":  "HuntersTalismanGroup",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "HuntersMacheteGroup",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "AHCapstone",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "APMultiplier",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "AnnulItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ArenaAllItemLockOutGroup",
+                       "MaxGroupOwnable":  "99"
+                   },
+                   {
+                       "id":  "ArenaItemAnvils",
+                       "MaxGroupOwnable":  "99"
+                   },
+                   {
+                       "id":  "ArenaLegendaryItems",
+                       "MaxGroupOwnable":  "99"
+                   },
+                   {
+                       "id":  "ArenaPrismaticItemAnvil",
+                       "MaxGroupOwnable":  "99"
+                   },
+                   {
+                       "id":  "ArenaStatAnvil",
+                       "MaxGroupOwnable":  "99"
+                   },
+                   {
+                       "id":  "AweItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "BaseJungleItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "BlackMarketConsumables",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "BloodstoneItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Boots",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "BootsOfSpeed",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "BootsWithoutActives",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "BuildsFromStopwatchGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "BurnItems",
+                       "MaxGroupOwnable":  "2"
+                   },
+                   {
+                       "id":  "CleaveItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Consumable",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ControlWardItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Default",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "DisabledOnFIRSTBLOODMode",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "DoransItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Elixir",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "EmptyList",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "EnchanterCapstone",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "EnergizedItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "EternityItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "GangplankRUpgrade01",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "GangplankRUpgrade02",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "GangplankRUpgrade03",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Glory",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "GoldItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "GrievousWoundsItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "GuardianItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "HarmonyItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "HelpingHandItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "HurricaneMeleeRestrictionAugments",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "ImmolateItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "ItemGroupSwapToSummonerDot",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ItemGroupSwapToSummonerFlash",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ItemGroupSwapToSummonerHaste",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ItemGroupSwapToSummonerHeal",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ItemGroupSwapToSummonerSmite",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "ItemGroupSwapToSummonerTeleport",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "JadeCompletedBoots",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "JadeCompletedJungle",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "Jade_WrigglesFeralFlare",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Juices",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "JungleEnchantments",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "JungleItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "KiwiJadeJGItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "Kiwi_Apricot",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "Kiwi_Apricot_PartyFavor",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Kiwi_UltraHydra_Components",
+                       "MaxGroupOwnable":  "3"
+                   },
+                   {
+                       "id":  "LastWhisper",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "LegalLvl1JunglePurchases",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "LegendaryAnvilGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "LifelineItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "MagicalOpusItems_Cherry",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "ManaflowItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "MarksmanCapstone",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "MythicItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "NewDoransItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "NonItem",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "OdysseySustainItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "OrnnItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "OrnnItems_Cherry",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PerksElixir",
+                       "MaxGroupOwnable":  "0"
+                   },
+                   {
+                       "id":  "PerksElixirAdvanced",
+                       "MaxGroupOwnable":  "0"
+                   },
+                   {
+                       "id":  "Potion",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "PrismaticAssassinItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PrismaticFighterItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PrismaticItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PrismaticMageItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PrismaticMarksmanItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PrismaticTankItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "PrismaticUtilityItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "Quicksilver",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "RoleQuestGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SLIMEStarterItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "SRIChampItemDisabledGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SRIChampItemDisabledGroup1",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeEmergencyShieldGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeFlashZoneGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeLaserAffixGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeMissileBarrageGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegePortableBarracksGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeRefundGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeShieldGeneratorGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeSniperCannonGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeTeleportPadGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SiegeTimefieldGroup",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "SightstoneActiveItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "SightstoneDisableGroup",
+                       "MaxGroupOwnable":  "0"
+                   },
+                   {
+                       "id":  "SpiritStone",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "StopwatchGroup",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "StrawberryEvolveItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "SupportItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "TearItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "TheBlackSpear",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "ThornmailItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "TimeStopItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "TotalBiscuit",
+                       "MaxGroupOwnable":  "0"
+                   },
+                   {
+                       "id":  "Trinket",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "226630",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226693",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443054",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443055",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443056",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443058",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443059",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443060",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443061",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443062",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443063",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443064",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443069",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443079",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443080",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443081",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443083",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443090",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "443193",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "444636",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "444637",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "444644",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "446632",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "446656",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "446667",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "446671",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "446691",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447100",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447101",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447102",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447103",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447104",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447105",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447106",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447107",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447108",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447109",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447110",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447112",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447113",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447114",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447115",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447116",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447118",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447119",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447120",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447121",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447122",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447123",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "FulminationShivExclusion",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2065",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2138",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2139",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2140",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2142",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2143",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2144",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "220012",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "222065",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223001",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223031",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223078",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223084",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223124",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223142",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223152",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "223190",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "224633",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "224636",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "224644",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226617",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226620",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226630",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226631",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226632",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226653",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226655",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226656",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226657",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226662",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226665",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226667",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226671",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226675",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226691",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "226692",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2500",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2501",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2502",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2503",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2504",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2505",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2506",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2507",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2510",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2511",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2512",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2513",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2514",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2515",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2516",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2517",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2518",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2519",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2520",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2521",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2522",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2523",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2524",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2525",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2526",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "2530",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3001",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3002",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3007",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3008",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3011",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3026",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3031",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3032",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3033",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3039",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3040",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3042",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3046",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3050",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3057",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3065",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3068",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3071",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3072",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3073",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3074",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3075",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3078",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3079",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3083",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3084",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3085",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3087",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3089",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3091",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3094",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3095",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3100",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3102",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3107",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3109",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3110",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3115",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3116",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3118",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3119",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3121",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3122",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3124",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3131",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3134",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3136",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3142",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3143",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3146",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3147",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3151",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3152",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3153",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3157",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3161",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3165",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3168",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3169",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3170",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3171",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3172",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3173",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3174",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3175",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3176",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3179",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3181",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3190",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3193",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3222",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3300",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3301",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3302",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3303",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3430",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3504",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3508",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3742",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3748",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "3814",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4004",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4005",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4010",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4011",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4012",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4013",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4014",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4016",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4017",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4401",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4402",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4403",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "447114",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4628",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4629",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4633",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4637",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4644",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4645",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "4646",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6333",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6609",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6610",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6616",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6617",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6620",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6622",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663039",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663056",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663058",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663059",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663060",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663064",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6631",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663146",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663172",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663193",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "663430",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "664011",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "664644",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6653",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6655",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6657",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6662",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6664",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6665",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "667101",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "667109",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "667112",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6672",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6673",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6675",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6676",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6692",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6693",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6695",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6696",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6697",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6698",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6699",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "6701",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "773068",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "773073",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "8001",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "8010",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "8020",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "CritMultipliers",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "InfinityCoil",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "MomentumItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "Quickblades",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "SpellbladeItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "SpellshieldItems",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "StasisAndRevive",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "ViktorHexCore",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "VoidPen",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "WardGreen",
+                       "MaxGroupOwnable":  "1"
+                   },
+                   {
+                       "id":  "WardItems",
+                       "MaxGroupOwnable":  "-1"
+                   },
+                   {
+                       "id":  "WardPink",
+                       "MaxGroupOwnable":  "1"
+                   }
+               ],
+    "tree":  [
+                 {
+                     "header":  "START",
+                     "tags":  [
+                                  "LANE",
+                                  "JUNGLE"
+                              ]
+                 },
+                 {
+                     "header":  "TOOLS",
+                     "tags":  [
+                                  "GOLDPER",
+                                  "CONSUMABLE",
+                                  "VISION"
+                              ]
+                 },
+                 {
+                     "header":  "DEFENSE",
+                     "tags":  [
+                                  "HEALTH",
+                                  "SPELLBLOCK",
+                                  "ARMOR",
+                                  "HEALTHREGEN"
+                              ]
+                 },
+                 {
+                     "header":  "ATTACK",
+                     "tags":  [
+                                  "ATTACKSPEED",
+                                  "CRITICALSTRIKE",
+                                  "DAMAGE",
+                                  "LIFESTEAL"
+                              ]
+                 },
+                 {
+                     "header":  "MAGIC",
+                     "tags":  [
+                                  "MANA",
+                                  "SPELLDAMAGE",
+                                  "COOLDOWNREDUCTION",
+                                  "MANAREGEN"
+                              ]
+                 },
+                 {
+                     "header":  "MOVEMENT",
+                     "tags":  [
+                                  "BOOTS",
+                                  "NONBOOTSMOVEMENT"
+                              ]
+                 },
+                 {
+                     "header":  "UNCATEGORIZED",
+                     "tags":  [
+                                  "ACTIVE",
+                                  "ARMORPENETRATION",
+                                  "STEALTH",
+                                  "SLOW",
+                                  "ONHIT",
+                                  "AURA",
+                                  "MAGICPENETRATION",
+                                  "TRINKET",
+                                  "SPELLVAMP",
+                                  "TENACITY"
+                              ]
+                 }
+             ]
+}

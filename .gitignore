@@ -1,0 +1,6 @@
+.env
+target/
+.embedmongo/
+.superpowers/
+.idea/
+*.iml

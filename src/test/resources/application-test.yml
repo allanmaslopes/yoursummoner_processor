@@ -1,0 +1,7 @@
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 8.0.0
+processor:
+  enabled: false

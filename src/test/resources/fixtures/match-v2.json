@@ -1,0 +1,845 @@
+{
+  "schemaVersion": 2,
+  "matchId": "SYNTHETIC_MATCH_1",
+  "platform": "BR1",
+  "region": "AMERICAS",
+  "patch": "16.22",
+  "patchMajor": 16,
+  "patchMinor": 22,
+  "gameVersion": "16.22.1",
+  "queueId": 420,
+  "gameDurationSec": 300,
+  "gameStartHour": {
+    "$date": "2026-11-07T10:00:00Z"
+  },
+  "winningTeam": 100,
+  "tier": "MASTER",
+  "participants": [
+    {
+      "slot": 1,
+      "team": 100,
+      "championId": 266,
+      "position": "TOP",
+      "win": true,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 2,
+      "team": 100,
+      "championId": 64,
+      "position": "JUNGLE",
+      "win": true,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 3,
+      "team": 100,
+      "championId": 103,
+      "position": "MIDDLE",
+      "win": true,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 4,
+      "team": 100,
+      "championId": 22,
+      "position": "BOTTOM",
+      "win": true,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 5,
+      "team": 100,
+      "championId": 89,
+      "position": "UTILITY",
+      "win": true,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 6,
+      "team": 200,
+      "championId": 86,
+      "position": "TOP",
+      "win": false,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 7,
+      "team": 200,
+      "championId": 11,
+      "position": "JUNGLE",
+      "win": false,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 8,
+      "team": 200,
+      "championId": 1,
+      "position": "MIDDLE",
+      "win": false,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 9,
+      "team": 200,
+      "championId": 51,
+      "position": "BOTTOM",
+      "win": false,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    },
+    {
+      "slot": 10,
+      "team": 200,
+      "championId": 412,
+      "position": "UTILITY",
+      "win": false,
+      "items": [
+        3006,
+        3031
+      ],
+      "summonerSpells": [
+        4,
+        12
+      ],
+      "runes": {
+        "primaryStyle": 8000,
+        "subStyle": 8100,
+        "perks": [
+          8005
+        ]
+      },
+      "kills": 1,
+      "deaths": 1,
+      "assists": 2,
+      "physicalDamage": 1000,
+      "magicDamage": 200,
+      "trueDamage": 10,
+      "damageTaken": 1500,
+      "goldEarned": 4000,
+      "cs": 60,
+      "champLevel": 6,
+      "visionScore": 8
+    }
+  ],
+  "frames": [
+    {
+      "minute": 0,
+      "slots": [
+        {
+          "slot": 1,
+          "gold": 500,
+          "totalGold": 600,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 2,
+          "gold": 500,
+          "totalGold": 600,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 3,
+          "gold": 500,
+          "totalGold": 600,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 4,
+          "gold": 500,
+          "totalGold": 600,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 5,
+          "gold": 500,
+          "totalGold": 600,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 6,
+          "gold": 500,
+          "totalGold": 500,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 7,
+          "gold": 500,
+          "totalGold": 500,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 8,
+          "gold": 500,
+          "totalGold": 500,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 9,
+          "gold": 500,
+          "totalGold": 500,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        },
+        {
+          "slot": 10,
+          "gold": 500,
+          "totalGold": 500,
+          "level": 1,
+          "xp": 0,
+          "cs": 0
+        }
+      ],
+      "blueKills": 0,
+      "redKills": 0
+    },
+    {
+      "minute": 1,
+      "slots": [
+        {
+          "slot": 1,
+          "gold": 600,
+          "totalGold": 1200,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 2,
+          "gold": 600,
+          "totalGold": 1200,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 3,
+          "gold": 600,
+          "totalGold": 1200,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 4,
+          "gold": 600,
+          "totalGold": 1200,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 5,
+          "gold": 600,
+          "totalGold": 1200,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 6,
+          "gold": 600,
+          "totalGold": 1100,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 7,
+          "gold": 600,
+          "totalGold": 1100,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 8,
+          "gold": 600,
+          "totalGold": 1100,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 9,
+          "gold": 600,
+          "totalGold": 1100,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        },
+        {
+          "slot": 10,
+          "gold": 600,
+          "totalGold": 1100,
+          "level": 2,
+          "xp": 250,
+          "cs": 8
+        }
+      ],
+      "blueKills": 1,
+      "redKills": 0
+    },
+    {
+      "minute": 2,
+      "slots": [
+        {
+          "slot": 1,
+          "gold": 700,
+          "totalGold": 1800,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 2,
+          "gold": 700,
+          "totalGold": 1800,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 3,
+          "gold": 700,
+          "totalGold": 1800,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 4,
+          "gold": 700,
+          "totalGold": 1800,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 5,
+          "gold": 700,
+          "totalGold": 1800,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 6,
+          "gold": 700,
+          "totalGold": 1700,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 7,
+          "gold": 700,
+          "totalGold": 1700,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 8,
+          "gold": 700,
+          "totalGold": 1700,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 9,
+          "gold": 700,
+          "totalGold": 1700,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        },
+        {
+          "slot": 10,
+          "gold": 700,
+          "totalGold": 1700,
+          "level": 3,
+          "xp": 500,
+          "cs": 16
+        }
+      ],
+      "blueKills": 2,
+      "redKills": 1
+    },
+    {
+      "minute": 3,
+      "slots": [
+        {
+          "slot": 1,
+          "gold": 800,
+          "totalGold": 2400,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 2,
+          "gold": 800,
+          "totalGold": 2400,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 3,
+          "gold": 800,
+          "totalGold": 2400,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 4,
+          "gold": 800,
+          "totalGold": 2400,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 5,
+          "gold": 800,
+          "totalGold": 2400,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 6,
+          "gold": 800,
+          "totalGold": 2300,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 7,
+          "gold": 800,
+          "totalGold": 2300,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 8,
+          "gold": 800,
+          "totalGold": 2300,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 9,
+          "gold": 800,
+          "totalGold": 2300,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        },
+        {
+          "slot": 10,
+          "gold": 800,
+          "totalGold": 2300,
+          "level": 4,
+          "xp": 750,
+          "cs": 24
+        }
+      ],
+      "blueKills": 3,
+      "redKills": 1
+    },
+    {
+      "minute": 4,
+      "slots": [
+        {
+          "slot": 1,
+          "gold": 900,
+          "totalGold": 3000,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 2,
+          "gold": 900,
+          "totalGold": 3000,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 3,
+          "gold": 900,
+          "totalGold": 3000,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 4,
+          "gold": 900,
+          "totalGold": 3000,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 5,
+          "gold": 900,
+          "totalGold": 3000,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 6,
+          "gold": 900,
+          "totalGold": 2900,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 7,
+          "gold": 900,
+          "totalGold": 2900,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 8,
+          "gold": 900,
+          "totalGold": 2900,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 9,
+          "gold": 900,
+          "totalGold": 2900,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        },
+        {
+          "slot": 10,
+          "gold": 900,
+          "totalGold": 2900,
+          "level": 5,
+          "xp": 1000,
+          "cs": 32
+        }
+      ],
+      "blueKills": 4,
+      "redKills": 2
+    }
+  ],
+  "events": [
+    {
+      "t": 5,
+      "slot": 1,
+      "type": "BUY",
+      "itemId": 1036,
+      "frame": 0
+    },
+    {
+      "t": 6,
+      "slot": 1,
+      "type": "UNDO",
+      "itemId": 1036
+    },
+    {
+      "t": 7,
+      "slot": 1,
+      "type": "BUY",
+      "itemId": 1001,
+      "frame": 0
+    },
+    {
+      "t": 10,
+      "slot": 1,
+      "type": "SKILL",
+      "skillSlot": 1,
+      "frame": 0
+    },
+    {
+      "t": 120,
+      "slot": 1,
+      "type": "BUY",
+      "itemId": 3006,
+      "frame": 2
+    },
+    {
+      "t": 130,
+      "slot": 1,
+      "type": "SELL",
+      "itemId": 2003
+    },
+    {
+      "t": 180,
+      "slot": 1,
+      "type": "SKILL",
+      "skillSlot": 2,
+      "frame": 3
+    },
+    {
+      "t": 240,
+      "slot": 1,
+      "type": "BUY",
+      "itemId": 3031,
+      "frame": 4
+    }
+  ],
+  "collectedAt": {
+    "$date": "2026-11-07T10:10:00Z"
+  }
+}
