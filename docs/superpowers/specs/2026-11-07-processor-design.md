@@ -2,7 +2,7 @@
 
 - Data: 2026-11-07
 - Repositório: `D:\Workspace\yoursummoner_processor` (GitHub `allanmaslopes/yoursummoner_processor`)
-- Lê: coleção `matches` do `yoursummoner_collector` (contrato em `D:\Workspace\yoursummoner_collector\docs\contrato-matches.md`, `schemaVersion: 1`)
+- Lê: coleção `matches` do `yoursummoner_collector` (contrato em `D:\Workspace\yoursummoner_collector\docs\contrato-matches.md`, `schemaVersion: 2`)
 - Serve: o `live-builds` (e, depois, o `live-builds-engine`)
 
 ## 1. Intenção
@@ -20,7 +20,7 @@ Para cada `(patch, championId, position)` com amostra suficiente:
 - **Ordem de skills:** as sequências dos 9 primeiros pontos (ex.: `Q E W Q Q R Q E Q`) e a prioridade de evolução derivada (ex.: `R > Q > E > W`), com contagem e taxa de vitória.
 - **Taxa de vitória por item completo** (aparecer nos itens finais).
 
-Também na v1, como **base para a versão situacional**: guardar amostras de decisão `(patch, championId, position, situação resumida, item comprado, venceu)` para cada compra de item completo. A situação resumida tem: minuto, diferença de ouro da equipe, diferença de nível com o oponente de rota, abates por time, e a mistura de dano físico/mágico do time inimigo (dos dados finais da partida). A v1 só guarda essas amostras; não as consome.
+Também na v1, como **base para a versão situacional**: guardar amostras de decisão `(patch, championId, position, situação resumida, item comprado, venceu)` para cada compra de item completo. A situação resumida vem de `frames[event.frame]` (estado dos 10 jogadores no minuto anterior ao evento) e tem: minuto, diferença de ouro da equipe, diferença de nível com o oponente de rota, abates por time, e a mistura de dano físico/mágico do time inimigo (dos dados finais da partida). A v1 só guarda essas amostras; não as consome.
 
 Publicação: um **pacote de conhecimento por patch** (JSON) servido por HTTP, mais consulta por campeão e rota.
 
@@ -74,7 +74,7 @@ Publicação: um **pacote de conhecimento por patch** (JSON) servido por HTTP, m
 3. Amostra mínima 30 partidas por entrada e 10 por sequência.
 4. Item completo pela árvore do Data Dragon (sem `into`, ≥ 2000, sem botas e consumíveis).
 5. Stack igual aos outros serviços: Spring Boot 4.1, Java 25, hexagonal com `ArchitectureTest`, Spring Data MongoDB, OpenFeign (Data Dragon), JUnit/Mockito/WireMock/JaCoCo, Mongo embarcado nos testes. Porta 8082, context path `/processor`.
-6. Leitura direta da coleção `matches` do banco `yoursummoner_collector` (só leitura), pelo contrato versionado. Partidas com `schemaVersion` diferente de 1 são ignoradas com log.
+6. Leitura direta da coleção `matches` do banco `yoursummoner_collector` (só leitura), pelo contrato versionado. Partidas com `schemaVersion` diferente de 2 são ignoradas com log (a v1, que repetia a situação em cada evento, não é mais produzida).
 
 ## 10. O que fica com o builder
 
