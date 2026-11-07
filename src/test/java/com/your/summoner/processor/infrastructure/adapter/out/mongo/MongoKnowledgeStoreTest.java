@@ -1,0 +1,269 @@
+package com.your.summoner.processor.infrastructure.adapter.out.mongo;
+
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.event.CommandListener;
+import com.mongodb.event.CommandStartedEvent;
+import com.mongodb.event.CommandSucceededEvent;
+import com.your.summoner.processor.application.port.out.KnowledgeStore.Snapshot;
+import com.your.summoner.processor.application.service.RecomputeService;
+import com.your.summoner.processor.domain.model.PatchVersion;
+import com.your.summoner.processor.infrastructure.adapter.out.collector.MongoMatchSource;
+import org.bson.Document;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import static com.mongodb.client.model.Filters.eq;
+import static com.your.summoner.processor.support.RecomputeFixtures.*;
+import static org.assertj.core.api.Assertions.*;
+
+@SpringBootTest
+@ActiveProfiles("test")
+class MongoKnowledgeStoreTest {
+    @Autowired MongoClient embeddedClient;
+    private MongoClient client;
+    private MongoTemplate mongo;
+    private MongoKnowledgeStore store;
+    private final SwapGate gate = new SwapGate();
+    private String sourceDatabase;
+
+    @BeforeEach void setup() {
+        var address = embeddedClient.getClusterDescription().getServerDescriptions().iterator().next().getAddress();
+        client = MongoClients.create(MongoClientSettings.builder()
+                .applyToClusterSettings(settings -> settings.hosts(List.of(address)))
+                .addCommandListener(gate).build());
+        String database = "processor_task5_" + UUID.randomUUID().toString().replace("-", "");
+        mongo = new MongoTemplate(client, database);
+        sourceDatabase = database + "_collector";
+        store = new MongoKnowledgeStore(mongo);
+    }
+
+    @AfterEach void cleanup() {
+        gate.release.countDown();
+        gate.readRelease.countDown();
+        if (client != null) {
+            if (mongo != null) mongo.getDb().drop();
+            if (sourceDatabase != null) client.getDatabase(sourceDatabase).drop();
+            client.close();
+        }
+    }
+
+    @Test void readersSeeOldPackageUntilSwap() throws Exception {
+        var oldPackage = snapshot(PATCH, 1);
+        var first = snapshot(PATCH, 2);
+        var second = snapshot(PATCH, 3);
+        var newPackage = new Snapshot(PATCH, first.computedAt(), 60, 4, 50,
+                List.of(first.entries().getFirst(), second.entries().getFirst()),
+                List.of(first.decisions().getFirst(), second.decisions().getFirst()));
+        store.publish(oldPackage);
+        var oldMeta = metadata();
+        gate.armed = true;
+        var publication = new FutureTask<Void>(() -> { store.publish(newPackage); return null; });
+        var writer = Thread.ofVirtual().start(publication);
+        try {
+            assertThat(gate.reached.await(10, TimeUnit.SECONDS)).as("publication reaches atomic metadata swap").isTrue();
+            assertThat(metadata()).isEqualTo(oldMeta);
+            for (int read = 0; read < 3; read++) {
+                assertThat(store.find(PATCH)).contains(oldPackage);
+            }
+            assertThat(versionedCollections("knowledge_")).hasSize(2);
+            assertThat(versionedCollections("decision_samples_")).hasSize(2);
+            var stagedKnowledge = versionedCollections("knowledge_").stream()
+                    .filter(name -> !name.equals(oldMeta.getString("activeCollection"))).findFirst().orElseThrow();
+            var stagedDecisions = versionedCollections("decision_samples_").stream()
+                    .filter(name -> !name.equals(oldMeta.getString("activeDecisionCollection"))).findFirst().orElseThrow();
+            assertThat(mongo.getCollection(stagedKnowledge).countDocuments()).isEqualTo(2);
+            assertThat(mongo.getCollection(stagedDecisions).countDocuments()).isEqualTo(2);
+        } finally {
+            gate.release.countDown();
+            writer.join(TimeUnit.SECONDS.toMillis(10));
+        }
+        publication.get(10, TimeUnit.SECONDS);
+        assertThat(store.find(PATCH)).contains(newPackage);
+        assertThat(metadata().getString("activeCollection")).isNotEqualTo(oldMeta.getString("activeCollection"));
+        assertThat(metadata().getString("activeDecisionCollection"))
+                .isNotEqualTo(oldMeta.getString("activeDecisionCollection"));
+    }
+
+    @Test void oldCollectionsAreDropped() {
+        store.publish(snapshot(PATCH, 1));
+        var oldMeta = metadata();
+        String oldKnowledge = oldMeta.getString("activeCollection");
+        String oldDecisions = oldMeta.getString("activeDecisionCollection");
+        assertThat(oldKnowledge).startsWith("knowledge_");
+        assertThat(oldDecisions).startsWith("decision_samples_");
+        assertThat(mongo.collectionExists(oldKnowledge)).isTrue();
+        assertThat(mongo.collectionExists(oldDecisions)).isTrue();
+
+        var replacement = snapshot(PATCH, 2);
+        store.publish(replacement);
+
+        assertThat(store.find(PATCH)).contains(replacement);
+        assertThat(mongo.collectionExists(oldKnowledge)).isFalse();
+        assertThat(mongo.collectionExists(oldDecisions)).isFalse();
+        assertThat(versionedCollections("knowledge_")).containsExactly(metadata().getString("activeCollection"));
+        assertThat(versionedCollections("decision_samples_"))
+                .containsExactly(metadata().getString("activeDecisionCollection"));
+        assertThat(mongo.getCollection("knowledge_meta").countDocuments()).isEqualTo(1);
+    }
+
+    @Test void readerRetriesWhenSwapDropsCollectionsAfterReadingOldMetadata() throws Exception {
+        var oldPackage = snapshot(PATCH, 1);
+        var newPackage = snapshot(PATCH, 2);
+        store.publish(oldPackage);
+        var oldMeta = metadata();
+        gate.pauseRead = true;
+        var read = new FutureTask<Optional<Snapshot>>(() -> store.find(PATCH));
+        var reader = Thread.ofVirtual().start(read);
+        try {
+            assertThat(gate.readReached.await(10, TimeUnit.SECONDS))
+                    .as("reader obtains old metadata before publication").isTrue();
+            store.publish(newPackage);
+            assertThat(mongo.collectionExists(oldMeta.getString("activeCollection"))).isFalse();
+            assertThat(mongo.collectionExists(oldMeta.getString("activeDecisionCollection"))).isFalse();
+            assertThat(read.isDone()).isFalse();
+        } finally {
+            gate.readRelease.countDown();
+            reader.join(TimeUnit.SECONDS.toMillis(10));
+        }
+
+        var result = read.get(10, TimeUnit.SECONDS).orElseThrow();
+        assertThat(result).isEqualTo(newPackage);
+        assertThat(result.entries()).extracting(entry -> entry.championId()).containsExactly(2);
+        assertThat(result.decisions()).extracting(decision -> decision.championId()).containsExactly(2);
+    }
+
+    @Test void dropFailureAfterSwapKeepsNewPackage() {
+        store.publish(snapshot(PATCH, 1));
+        var failing = new MongoTemplate(client, mongo.getDb().getName()) {
+            @Override public void dropCollection(String name) { throw new IllegalStateException("drop failed"); }
+        };
+        var newPackage = snapshot(PATCH, 2);
+
+        assertThatCode(() -> new MongoKnowledgeStore(failing).publish(newPackage)).doesNotThrowAnyException();
+
+        assertThat(store.find(PATCH)).contains(newPackage);
+        assertThatCode(() -> new MongoKnowledgeStore(failing).remove(PATCH)).doesNotThrowAnyException();
+        assertThat(store.find(PATCH)).isEmpty();
+    }
+
+    @Test void removingPatchDropsMetadataAndBothCollections() {
+        store.publish(snapshot(PATCH, 1));
+
+        store.remove(PATCH);
+
+        assertThat(store.find(PATCH)).isEmpty();
+        assertThat(store.patches()).isEmpty();
+        assertThat(versionedCollections("knowledge_")).isEmpty();
+        assertThat(versionedCollections("decision_samples_")).isEmpty();
+        assertThat(mongo.getCollection("knowledge_meta").countDocuments()).isZero();
+    }
+
+    @Test void recomputeNeverWritesCollector() throws Exception {
+        String json;
+        try (var input = getClass().getResourceAsStream("/fixtures/match-v2.json")) {
+            json = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        var matches = client.getDatabase(sourceDatabase).getCollection("matches");
+        matches.insertMany(List.of(
+                Document.parse(json).append("_id", "v2").append("patch", PATCH.toString()).append("schemaVersion", 2),
+                Document.parse(json).append("_id", "v1").append("patch", PATCH.toString()).append("schemaVersion", 1)));
+        var before = matches.find().sort(new Document("_id", 1)).into(new ArrayList<>());
+        try (var source = new MongoMatchSource(matches)) {
+            var service = new RecomputeService(source, source, patch -> catalog(), store, 1, 1, 5);
+            service.recompute();
+            service.recompute();
+        }
+
+        assertThat(store.find(PATCH).orElseThrow().matches()).isEqualTo(1);
+        assertThat(store.find(PATCH).orElseThrow().ignoredBySchema()).isEqualTo(1);
+        assertThat(matches.countDocuments()).isEqualTo(2);
+        assertThat(matches.find().sort(new Document("_id", 1)).into(new ArrayList<>())).isEqualTo(before);
+        assertThat(client.getDatabase(sourceDatabase).listCollectionNames().into(new ArrayList<>()))
+                .containsExactly("matches");
+    }
+
+    @Test void patchWithOnlyUnsupportedSchemaPublishesIgnoredCount() {
+        var unsupportedPatch = new PatchVersion(16, 23);
+        var matches = client.getDatabase(sourceDatabase).getCollection("matches");
+        matches.insertMany(List.of(
+                new Document("_id", "old").append("patch", unsupportedPatch.toString()).append("schemaVersion", 1),
+                new Document("_id", "future").append("patch", unsupportedPatch.toString()).append("schemaVersion", 3)));
+        var before = matches.find().sort(new Document("_id", 1)).into(new ArrayList<>());
+        store.publish(snapshot(unsupportedPatch, 99));
+
+        try (var source = new MongoMatchSource(matches)) {
+            new RecomputeService(source, source, patch -> catalog(), store, 1, 1, 5).recompute();
+        }
+
+        var result = store.find(unsupportedPatch).orElseThrow();
+        assertThat(store.patches()).containsExactly(unsupportedPatch);
+        assertThat(result.matches()).isZero();
+        assertThat(result.ignoredBySchema()).isEqualTo(2);
+        assertThat(result.entries()).isEmpty();
+        assertThat(result.decisions()).isEmpty();
+        assertThat(matches.find().sort(new Document("_id", 1)).into(new ArrayList<>())).isEqualTo(before);
+    }
+
+    private Document metadata() {
+        var meta = mongo.getCollection("knowledge_meta").find(eq("_id", PATCH.toString())).first();
+        assertThat(meta).isNotNull();
+        return meta;
+    }
+
+    private List<String> versionedCollections(String prefix) {
+        return mongo.getCollectionNames().stream()
+                .filter(name -> name.startsWith(prefix) && !name.equals("knowledge_meta")).sorted().toList();
+    }
+
+    private static final class SwapGate implements CommandListener {
+        final CountDownLatch reached = new CountDownLatch(1);
+        final CountDownLatch release = new CountDownLatch(1);
+        final CountDownLatch readReached = new CountDownLatch(1);
+        final CountDownLatch readRelease = new CountDownLatch(1);
+        volatile boolean armed;
+        volatile boolean pauseRead;
+
+        @Override public void commandStarted(CommandStartedEvent event) {
+            if (!armed || !"findAndModify".equals(event.getCommandName())
+                    || !"knowledge_meta".equals(event.getCommand().getString("findAndModify").getValue())) return;
+            armed = false;
+            reached.countDown();
+            try {
+                if (!release.await(15, TimeUnit.SECONDS)) throw new AssertionError("metadata swap was not released");
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError("metadata swap interrupted", exception);
+            }
+        }
+
+        @Override public void commandSucceeded(CommandSucceededEvent event) {
+            if (!pauseRead || !"find".equals(event.getCommandName())) return;
+            var cursor = event.getResponse().getDocument("cursor", null);
+            if (cursor == null || !cursor.containsKey("firstBatch")) return;
+            var batch = cursor.getArray("firstBatch");
+            if (batch.isEmpty() || !batch.get(0).asDocument().containsKey("activeCollection")) return;
+            pauseRead = false;
+            readReached.countDown();
+            try {
+                if (!readRelease.await(15, TimeUnit.SECONDS)) throw new AssertionError("metadata reader was not released");
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError("metadata reader interrupted", exception);
+            }
+        }
+    }
+}

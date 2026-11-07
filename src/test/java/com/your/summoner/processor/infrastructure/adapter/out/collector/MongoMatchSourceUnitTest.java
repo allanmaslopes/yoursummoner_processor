@@ -2,6 +2,7 @@ package com.your.summoner.processor.infrastructure.adapter.out.collector;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.your.summoner.processor.domain.model.PatchVersion;
@@ -16,6 +17,27 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class MongoMatchSourceUnitTest {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Test void patchDiscoveryDoesNotFilterBySchema() {
+        MongoCollection<Document> collection = mock(MongoCollection.class);
+        AggregateIterable<Document> aggregate = mock(AggregateIterable.class, RETURNS_SELF);
+        MongoCursor<Document> cursor = mock(MongoCursor.class);
+        when(collection.aggregate(anyList())).thenReturn(aggregate);
+        when(aggregate.iterator()).thenReturn(cursor);
+        when(cursor.hasNext()).thenReturn(true, false);
+        when(cursor.next()).thenReturn(new Document("_id", "16.23"));
+        var pipeline = ArgumentCaptor.forClass(List.class);
+
+        assertThat(new MongoMatchSource(collection).patches()).containsExactly(new PatchVersion(16, 23));
+
+        verify(collection).aggregate(pipeline.capture());
+        List<Bson> stages = pipeline.getValue();
+        assertThat(stages).allSatisfy(stage -> assertThat(stage
+                .toBsonDocument(Document.class, MongoClientSettings.getDefaultCodecRegistry()).toJson())
+                .doesNotContain("schemaVersion"));
+        verify(cursor).close();
+    }
+
     @SuppressWarnings("unchecked")
     @Test void ignoresEventsWithoutTypeAndKeepsRemainingEvents() {
         MongoCollection<Document> collection = mock(MongoCollection.class);

@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.your.summoner.processor.application.port.out.MatchSource;
+import com.your.summoner.processor.application.port.out.MatchSourceMetrics;
 import com.your.summoner.processor.domain.model.MatchRecord;
 import com.your.summoner.processor.domain.model.MatchRecord.*;
 import com.your.summoner.processor.domain.model.PatchVersion;
@@ -27,7 +28,7 @@ import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.ascending;
 
 @Component
-public final class MongoMatchSource implements MatchSource, AutoCloseable {
+public final class MongoMatchSource implements MatchSource, MatchSourceMetrics, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(MongoMatchSource.class);
     private static final List<String> FIELDS = List.of(
             "participants.slot", "participants.team", "participants.championId", "participants.position",
@@ -74,11 +75,15 @@ public final class MongoMatchSource implements MatchSource, AutoCloseable {
 
     @Override public List<PatchVersion> patches() {
         var patches = new TreeSet<PatchVersion>();
-        try (var cursor = collection.aggregate(List.of(new Document("$match", new Document("schemaVersion", 2)),
+        try (var cursor = collection.aggregate(List.of(
                 new Document("$group", new Document("_id", "$patch")))).batchSize(500).iterator()) {
             while (cursor.hasNext()) PatchVersion.parse(cursor.next().getString("_id")).ifPresent(patches::add);
         }
         return List.copyOf(patches);
+    }
+
+    @Override public long ignoredBySchema(PatchVersion patch) {
+        return collection.countDocuments(and(eq("patch", patch.toString()), ne("schemaVersion", 2)));
     }
 
     private static MatchRecord map(Document document) {
