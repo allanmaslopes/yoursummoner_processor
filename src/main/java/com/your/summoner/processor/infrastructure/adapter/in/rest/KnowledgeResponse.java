@@ -1,6 +1,7 @@
 package com.your.summoner.processor.infrastructure.adapter.in.rest;
 
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
+import com.your.summoner.processor.domain.model.FullBuildPathStat;
 import com.your.summoner.processor.domain.model.ItemStat;
 import com.your.summoner.processor.domain.model.KeystoneStat;
 import com.your.summoner.processor.domain.model.MatchRecord;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public record KnowledgeResponse(String patch, int championId, String position, int games, int wins,
                                 BigDecimal winRate, List<SequenceResponse> starting,
                                 List<SequenceResponse> boots, List<SequenceResponse> buildPaths,
+                                List<FullBuildPathResponse> fullBuildPaths,
                                 List<SequenceResponse> purchaseTree,
                                 Map<Integer, List<SequenceResponse>> componentsBefore,
                                 List<SequenceResponse> skillOrders, String skillPriority,
@@ -28,7 +30,9 @@ public record KnowledgeResponse(String patch, int championId, String position, i
                 Map.Entry::getKey, entry -> sequences(entry.getValue())));
         return new KnowledgeResponse(value.patch(), value.championId(), value.position(), value.games(), value.wins(),
                 rate(value.wins(), value.games()), sequences(value.starting()), sequences(value.boots()),
-                sequences(value.buildPaths()), sequences(value.purchaseTree()), components,
+                sequences(value.buildPaths()),
+                value.fullBuildPaths().stream().map(FullBuildPathResponse::from).toList(),
+                sequences(value.purchaseTree()), components,
                 sequences(value.skillOrders()), value.skillPriority(),
                 value.itemWinRates().stream().map(ItemResponse::from).toList(), value.lowSample(),
                 value.keystones().stream().map(KeystoneResponse::from).toList(),
@@ -49,6 +53,14 @@ public record KnowledgeResponse(String patch, int championId, String position, i
     public record SequenceResponse(List<Integer> sequence, int games, int wins, BigDecimal winRate) {
         static SequenceResponse from(SequenceStat value) {
             return new SequenceResponse(value.sequence(), value.games(), value.wins(), rate(value.wins(), value.games()));
+        }
+    }
+
+    public record FullBuildPathResponse(List<Integer> sequence, int games, int wins,
+                                        BigDecimal winRate, boolean lowSample) {
+        static FullBuildPathResponse from(FullBuildPathStat value) {
+            return new FullBuildPathResponse(value.sequence(), value.games(), value.wins(),
+                    rate(value.wins(), value.games()), value.lowSample());
         }
     }
 
@@ -73,13 +85,15 @@ public record KnowledgeResponse(String patch, int championId, String position, i
 
     public record RunePageResponse(int keystone, int primaryStyle, int subStyle, List<Integer> perks,
                                    StatPerksResponse statPerks, int games, int wins, BigDecimal winRate,
-                                   boolean lowSample, SequenceResponse buildPath, boolean buildPathLowSample) {
+                                   boolean lowSample, SequenceResponse buildPath, boolean buildPathLowSample,
+                                   FullBuildPathResponse fullBuildPath) {
         static RunePageResponse from(RunePageStat value) {
             return new RunePageResponse(value.keystone(), value.primaryStyle(), value.subStyle(), value.perks(),
                     StatPerksResponse.from(value.statPerks()), value.games(), value.wins(),
                     rate(value.wins(), value.games()), value.lowSample(),
                     value.buildPath() == null ? null : SequenceResponse.from(value.buildPath()),
-                    value.buildPathLowSample());
+                    value.buildPathLowSample(), value.fullBuildPath() == null
+                            ? null : FullBuildPathResponse.from(value.fullBuildPath()));
         }
     }
 

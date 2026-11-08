@@ -37,7 +37,7 @@ public final class ParticipantExtractor {
         var completedOrder = purchases.stream()
                 .map(event -> catalog.normalize(event.itemId()))
                 .filter(itemId -> catalog.isCompleted(itemId) && !catalog.isBoots(itemId))
-                .limit(3)
+                .limit(6)
                 .toList();
 
         var treeOrder = treeOrder(purchases, catalog);

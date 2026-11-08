@@ -9,6 +9,7 @@ import com.mongodb.event.CommandSucceededEvent;
 import com.your.summoner.processor.application.port.out.KnowledgeStore.Snapshot;
 import com.your.summoner.processor.application.service.RecomputeService;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
+import com.your.summoner.processor.domain.model.FullBuildPathStat;
 import com.your.summoner.processor.domain.model.KeystoneStat;
 import com.your.summoner.processor.domain.model.MatchRecord;
 import com.your.summoner.processor.domain.model.PatchVersion;
@@ -108,20 +109,21 @@ class MongoKnowledgeStoreTest {
 
     @Test void v2RoundTrip() {
         var sequence = new SequenceStat(List.of(3153, 3078, 3053), 2, 1);
+        var fullBuild = new FullBuildPathStat(List.of(3153, 3078, 3053, 3031, 3089), 2, 1, true);
         var perks = List.of(8010, 9111, 9104, 8299, 8444, 8242);
         var full = new ChampionKnowledge(PATCH.toString(), 1, "TOP", 5, 3,
-                List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
+                List.of(), List.of(), List.of(), List.of(fullBuild), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
                 true, List.of(new KeystoneStat(8010, 5, 3, true)),
                 List.of(new RunePageStat(8010, 8000, 8400, perks, new MatchRecord.StatPerks(5005, 5008, 5011),
-                                5, 3, true, sequence, true),
-                        new RunePageStat(8437, 8400, 8000, perks, null, 1, 0, true, null, false)),
+                                5, 3, true, sequence, true, fullBuild),
+                        new RunePageStat(8437, 8400, 8000, perks, null, 1, 0, true, null, false, null)),
                 List.of(new SpellPairStat(List.of(4, 12), 5, 3, true)),
                 new PrimaryRecommendation(8010, List.of(4, 12), true));
         var empty = new ChampionKnowledge(PATCH.toString(), 2, "TOP", 0, 0,
-                List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
+                List.of(), List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
                 false, List.of(), List.of(), List.of(), null);
         var noSpells = new ChampionKnowledge(PATCH.toString(), 3, "TOP", 1, 1,
-                List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
+                List.of(), List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(), "R > Q > W > E", List.of(),
                 true, List.of(new KeystoneStat(8437, 1, 1, true)), List.of(), List.of(),
                 new PrimaryRecommendation(8437, List.of(), true));
         var base = snapshot(PATCH, 1);
@@ -153,6 +155,31 @@ class MongoKnowledgeStoreTest {
         assertThat(entry.summonerSpells()).isEmpty();
         assertThat(entry.primary()).isNull();
         assertThat(entry.lowSample()).isFalse();
+    }
+
+    @Test void oldDocumentWithoutFullBuildStillReads() {
+        var base = snapshot(PATCH, 1);
+        store.publish(new Snapshot(PATCH, base.computedAt(), 5, 0, 10, List.of(), List.of()));
+        mongo.getCollection(metadata().getString("activeCollection")).insertOne(new Document()
+                .append("patch", PATCH.toString()).append("championId", 8).append("position", "TOP")
+                .append("games", 5).append("wins", 3)
+                .append("starting", List.of()).append("boots", List.of()).append("buildPaths", List.of())
+                .append("purchaseTree", List.of()).append("componentsBefore", new Document())
+                .append("skillOrders", List.of()).append("skillPriority", "R > Q > W > E")
+                .append("itemWinRates", List.of()).append("lowSample", true)
+                .append("keystones", List.of(new Document("perk", 8010).append("games", 5)
+                        .append("wins", 3).append("lowSample", true)))
+                .append("runePages", List.of(new Document("keystone", 8010)
+                        .append("primaryStyle", 8000).append("subStyle", 8400)
+                        .append("perks", List.of(8010, 9111, 9104, 8299, 8444, 8242))
+                        .append("games", 5).append("wins", 3).append("lowSample", true)
+                        .append("buildPath", null).append("buildPathLowSample", false)))
+                .append("summonerSpells", List.of()).append("primary", null));
+
+        var entry = store.find(PATCH).orElseThrow().entries().getFirst();
+
+        assertThat(entry.fullBuildPaths()).isEmpty();
+        assertThat(entry.runePages()).singleElement().satisfies(page -> assertThat(page.fullBuildPath()).isNull());
     }
 
     @Test void oldCollectionsAreDropped() {

@@ -53,16 +53,19 @@ class ParticipantExtractorTest {
     }
 
     @Test
-    void completedOrderStopsAtThree() {
+    void completedOrderStopsAtSix() {
         var events = List.of(
                 buy(120, 1, 2001, 0),
                 buy(180, 1, 2002, 0),
                 buy(240, 1, 2005, 0),
-                buy(300, 1, 2004, 0));
+                buy(300, 1, 2004, 0),
+                buy(360, 1, 4001, 0),
+                buy(420, 1, 5002, 0),
+                buy(480, 1, 2001, 0));
 
         var view = viewForSlotOne(match(events, List.of()));
 
-        assertEquals(List.of(2001, 2002, 2005), view.completedOrder());
+        assertEquals(List.of(2001, 2002, 2005, 2004, 4001, 5002), view.completedOrder());
     }
 
     @Test

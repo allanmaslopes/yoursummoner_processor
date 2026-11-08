@@ -2,6 +2,7 @@ package com.your.summoner.processor.application.service;
 
 import com.your.summoner.processor.application.service.ParticipantExtractor.ParticipantView;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
+import com.your.summoner.processor.domain.model.FullBuildPathStat;
 import com.your.summoner.processor.domain.model.ItemStat;
 import com.your.summoner.processor.domain.model.KeystoneStat;
 import com.your.summoner.processor.domain.model.MatchRecord;
@@ -80,17 +81,25 @@ public final class KnowledgeAggregator {
         var starting = sequences(views, ParticipantView::starting, minOccurrences, topN);
         var boots = sequences(views, view -> view.boots() == null ? List.of() : List.of(view.boots()),
                 minOccurrences, topN);
-        var buildPaths = sequences(views, ParticipantView::completedOrder, minOccurrences, topN);
+        // Caminho com menos de 3 itens (partida curta) só entra se nenhum chegou a 3: sempre há recomendação.
+        var buildPaths = sequences(views, view -> view.completedOrder().size() >= 3
+                ? firstItems(view.completedOrder(), 3) : List.of(), minOccurrences, topN);
+        if (buildPaths.isEmpty()) {
+            buildPaths = sequences(views, view -> firstItems(view.completedOrder(), 3), minOccurrences, topN);
+        }
+        var fullBuildPaths = fullBuildPaths(views, minOccurrences, topN);
+        var generalFullBuildPath = fullBuildPaths.stream().findFirst().orElse(null);
         var purchaseTree = sequences(views, ParticipantView::treeOrder, minOccurrences, topN);
         var generalBuildPath = sequences(views,
-                view -> view.completedOrder().size() == 3 ? view.completedOrder() : List.of(), 1, 1)
+                view -> view.completedOrder().size() >= 3 ? firstItems(view.completedOrder(), 3) : List.of(), 1, 1)
                 .stream().findFirst().orElse(null);
 
         var validRuneViews = views.stream().filter(this::hasCompleteRunes).toList();
         var allKeystones = keystones(validRuneViews, minOccurrences, Integer.MAX_VALUE);
         var keystones = allKeystones.stream().limit(topN).toList();
         var runePages = keystones.stream()
-                .map(keystone -> runePage(validRuneViews, keystone.perk(), generalBuildPath, minOccurrences))
+                .map(keystone -> runePage(validRuneViews, keystone.perk(), generalBuildPath,
+                        generalFullBuildPath, minOccurrences))
                 .toList();
         var allSpellPairs = spellPairs(views, minOccurrences, Integer.MAX_VALUE);
         var spellPairs = allSpellPairs.stream().limit(topN).toList();
@@ -101,7 +110,7 @@ public final class KnowledgeAggregator {
 
         return new ChampionKnowledge(patch, group.championId(), group.position(), views.size(),
                 (int) views.stream().filter(ParticipantView::win).count(),
-                starting, boots, buildPaths, purchaseTree, componentsBefore, skills,
+                starting, boots, buildPaths, fullBuildPaths, purchaseTree, componentsBefore, skills,
                 skillPriority(skills), itemWinRates, views.size() < minGames,
                 keystones, runePages, spellPairs, primary);
     }
@@ -128,7 +137,8 @@ public final class KnowledgeAggregator {
     }
 
     private RunePageStat runePage(List<ParticipantView> validRuneViews, int keystone,
-                                  SequenceStat generalBuildPath, int minOccurrences) {
+                                  SequenceStat generalBuildPath, FullBuildPathStat generalFullBuildPath,
+                                  int minOccurrences) {
         var keystoneViews = validRuneViews.stream()
                 .filter(view -> view.runes().perks().getFirst() == keystone)
                 .toList();
@@ -148,7 +158,7 @@ public final class KnowledgeAggregator {
                 .toList();
 
         var ownBuildPath = sequences(keystoneViews,
-                view -> view.completedOrder().size() == 3 ? view.completedOrder() : List.of(), 1, 1)
+                view -> view.completedOrder().size() >= 3 ? firstItems(view.completedOrder(), 3) : List.of(), 1, 1)
                 .stream().findFirst().orElse(null);
         var buildPath = ownBuildPath;
         if ((ownBuildPath == null || ownBuildPath.games() < minOccurrences)
@@ -159,9 +169,31 @@ public final class KnowledgeAggregator {
 
         var key = selected.getKey();
         var counts = selected.getValue();
+        var ownFullBuildPath = fullBuildPaths(pageViews, minOccurrences, 1).stream()
+                .findFirst().orElse(null);
         return new RunePageStat(keystone, key.primaryStyle(), key.subStyle(), key.perks(),
                 modalStatPerks(pageViews), counts.games, counts.wins, counts.games < minOccurrences,
-                buildPath, buildPath != null && buildPath.games() < minOccurrences);
+                buildPath, buildPath != null && buildPath.games() < minOccurrences,
+                ownFullBuildPath == null ? generalFullBuildPath : ownFullBuildPath);
+    }
+
+    private List<FullBuildPathStat> fullBuildPaths(List<ParticipantView> views,
+                                                   int minOccurrences, int topN) {
+        var ranked = sequences(views,
+                view -> view.completedOrder().size() >= 5 ? firstItems(view.completedOrder(), 6) : List.of(),
+                1, Integer.MAX_VALUE);
+        if (ranked.isEmpty()) return List.of();
+        var mostFrequent = ranked.getFirst();
+        return ranked.stream()
+                .filter(stat -> stat == mostFrequent || stat.games() >= minOccurrences)
+                .limit(topN)
+                .map(stat -> new FullBuildPathStat(stat.sequence(), stat.games(), stat.wins(),
+                        stat.games() < minOccurrences))
+                .toList();
+    }
+
+    private List<Integer> firstItems(List<Integer> items, int limit) {
+        return List.copyOf(items.subList(0, Math.min(items.size(), limit)));
     }
 
     private MatchRecord.StatPerks modalStatPerks(List<ParticipantView> views) {

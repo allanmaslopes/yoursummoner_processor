@@ -36,7 +36,7 @@ class KnowledgeAggregatorTest {
         assertEquals(List.of(new KeystoneStat(8010, 1, 1, true)), result.keystones());
         assertEquals(List.of(new RunePageStat(8010, 8000, 8400,
                 List.of(8010, 9111, 9104, 8299, 8444, 8242), statPerks,
-                1, 1, true, new SequenceStat(List.of(3153, 3078, 3053), 1, 1), true)),
+                1, 1, true, new SequenceStat(List.of(3153, 3078, 3053), 1, 1), true, null)),
                 result.runePages());
         assertEquals(List.of(new SpellPairStat(List.of(4, 12), 1, 1, true)), result.summonerSpells());
         assertEquals(new PrimaryRecommendation(8010, List.of(4, 12), true), result.primary());
@@ -62,10 +62,10 @@ class KnowledgeAggregatorTest {
         assertEquals(List.of(
                 new RunePageStat(8010, 8000, 8400,
                         List.of(8010, 9111, 9104, 8299, 8444, 8242), null,
-                        2, 1, false, new SequenceStat(List.of(3153, 3078, 3053), 2, 1), false),
+                        2, 1, false, new SequenceStat(List.of(3153, 3078, 3053), 2, 1), false, null),
                 new RunePageStat(8437, 8400, 8000,
                         List.of(8437, 8446, 8444, 8451, 8347, 8304), null,
-                        1, 1, false, new SequenceStat(List.of(3078, 3153, 3053), 1, 1), false)),
+                        1, 1, false, new SequenceStat(List.of(3078, 3153, 3053), 1, 1), false, null)),
                 result.runePages());
         assertEquals(new PrimaryRecommendation(8010, List.of(4, 12), false), result.primary());
     }
@@ -275,6 +275,66 @@ class KnowledgeAggregatorTest {
         assertTrue(result.lowSample());
         assertEquals(List.of(new SequenceStat(List.of(1055), 3, 2)), result.starting());
         assertEquals(List.of(new SequenceStat(List.of(3153, 3078, 3053), 3, 2)), result.buildPaths());
+    }
+
+    @Test
+    void fullBuildUsesOnlyGamesWithFiveOrMoreItems() {
+        var views = Stream.of(
+                runeView("TOP", true, List.of(), List.of(1, 2, 3, 4), List.of(4, 12),
+                        8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242), null),
+                runeView("TOP", true, List.of(), List.of(7, 8, 9, 10, 11, 12, 13), List.of(4, 12),
+                        8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242), null),
+                runeView("TOP", false, List.of(), List.of(7, 8, 9, 10, 11, 12), List.of(4, 12),
+                        8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242), null));
+
+        var result = top(views, 1, 1, 5);
+
+        assertEquals(1, result.fullBuildPaths().size());
+        assertEquals(List.of(7, 8, 9, 10, 11, 12), result.fullBuildPaths().getFirst().sequence());
+        assertEquals(2, result.fullBuildPaths().getFirst().games());
+        assertEquals(1, result.fullBuildPaths().getFirst().wins());
+        assertFalse(result.fullBuildPaths().getFirst().lowSample());
+    }
+
+    @Test
+    void buildPathsIgnoreGamesWithFewerThanThreeItems() {
+        var views = Stream.of(
+                runeView("TOP", true, List.of(), List.of(1, 2), List.of(4, 12),
+                        8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242), null),
+                runeView("TOP", true, List.of(), List.of(1, 2), List.of(4, 12),
+                        8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242), null),
+                runeView("TOP", false, List.of(), List.of(7, 8, 9), List.of(4, 12),
+                        8000, 8400, List.of(8010, 9111, 9104, 8299, 8444, 8242), null));
+
+        var result = top(views, 1, 1, 5);
+
+        assertEquals(List.of(List.of(7, 8, 9)),
+                result.buildPaths().stream().map(path -> path.sequence()).toList());
+    }
+
+    @Test
+    void fullBuildPublishesMostFrequentEvenWithLowSample() {
+        var result = top(Stream.of(runeView("TOP", true, List.of(), List.of(1, 2, 3, 4, 5),
+                List.of(4, 12), 8000, 8400,
+                List.of(8010, 9111, 9104, 8299, 8444, 8242), null)), 1, 10, 5);
+
+        assertEquals(1, result.fullBuildPaths().size());
+        assertEquals(List.of(1, 2, 3, 4, 5), result.fullBuildPaths().getFirst().sequence());
+        assertTrue(result.fullBuildPaths().getFirst().lowSample());
+    }
+
+    @Test
+    void runePageFullBuildFallsBackToGeneral() {
+        var firstPage = List.of(8010, 9111, 9104, 8299, 8444, 8242);
+        var secondPage = List.of(8437, 8446, 8444, 8451, 8347, 8304);
+        var result = top(Stream.of(
+                runeView("TOP", true, List.of(), List.of(1, 2, 3), List.of(4, 12),
+                        8000, 8400, firstPage, null),
+                runeView("TOP", false, List.of(), List.of(6, 7, 8, 9, 10), List.of(4, 12),
+                        8400, 8000, secondPage, null)), 1, 2, 2);
+
+        assertEquals(result.fullBuildPaths().getFirst(), page(result, 8010).fullBuildPath());
+        assertTrue(page(result, 8010).fullBuildPath().lowSample());
     }
 
     @Test

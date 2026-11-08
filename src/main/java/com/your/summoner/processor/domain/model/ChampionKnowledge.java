@@ -8,6 +8,7 @@ import java.util.TreeMap;
 public record ChampionKnowledge(String patch, int championId, String position,
                                 int games, int wins, List<SequenceStat> starting,
                                 List<SequenceStat> boots, List<SequenceStat> buildPaths,
+                                List<FullBuildPathStat> fullBuildPaths,
                                 List<SequenceStat> purchaseTree,
                                 Map<Integer, List<SequenceStat>> componentsBefore,
                                 List<SequenceStat> skillOrders, String skillPriority,
@@ -18,6 +19,7 @@ public record ChampionKnowledge(String patch, int championId, String position,
         starting = List.copyOf(starting);
         boots = List.copyOf(boots);
         buildPaths = List.copyOf(buildPaths);
+        fullBuildPaths = fullBuildPaths == null ? List.of() : List.copyOf(fullBuildPaths);
         purchaseTree = List.copyOf(purchaseTree);
         var components = new TreeMap<Integer, List<SequenceStat>>();
         componentsBefore.forEach((item, sequences) -> components.put(item, List.copyOf(sequences)));
