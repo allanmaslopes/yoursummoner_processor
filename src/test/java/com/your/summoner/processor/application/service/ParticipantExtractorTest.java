@@ -69,6 +69,19 @@ class ParticipantExtractorTest {
     }
 
     @Test
+    void completedOrderIgnoresRebuyOfSameItem() {
+        var events = List.of(
+                buy(120, 1, 3142, 0),
+                new TimelineEvent(180, 1, EventType.SELL, 3142, null, 0),
+                buy(240, 1, 3142, 0),
+                buy(300, 1, 6676, 0));
+
+        var view = viewForSlotOne(match(events, List.of()));
+
+        assertEquals(List.of(3142, 6676), view.completedOrder());
+    }
+
+    @Test
     void treeIncludesComponentsAboveThousand() {
         var view = viewForSlotOne(match(List.of(buy(120, 1, 5001, 0)), List.of()));
 
@@ -216,9 +229,11 @@ class ParticipantExtractorTest {
                 item(2004, 3_300, false, false, List.of(), List.of()),
                 item(3001, 1_100, true, false, List.of(), List.of(3002)),
                 item(3002, 1_100, true, false, List.of(3001), List.of()),
+                item(3142, 2_800, false, false, List.of(), List.of()),
                 item(4001, 3_400, false, false, List.of(), List.of()),
                 item(5001, 1_200, false, false, List.of(), List.of(5002)),
-                item(5002, 3_500, false, false, List.of(5001), List.of())));
+                item(5002, 3_500, false, false, List.of(5001), List.of()),
+                item(6676, 3_000, false, false, List.of(), List.of())));
     }
 
     private ItemInfo item(int id, int totalGold, boolean boots, boolean consumable,

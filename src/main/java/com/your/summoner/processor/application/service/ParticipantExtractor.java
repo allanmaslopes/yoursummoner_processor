@@ -37,6 +37,7 @@ public final class ParticipantExtractor {
         var completedOrder = purchases.stream()
                 .map(event -> catalog.normalize(event.itemId()))
                 .filter(itemId -> catalog.isCompleted(itemId) && !catalog.isBoots(itemId))
+                .distinct()
                 .limit(6)
                 .toList();
 
