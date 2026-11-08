@@ -17,3 +17,11 @@ Stack: OpenFeign, MongoDB, JUnit/Mockito/WireMock/ArchUnit/JaCoCo. Use o JDK 25 
 ## Ferramentas do workspace
 
 Scripts de rotina em `D:\Workspace\Scripts\yoursummoner` (ver `README.md` lá): `verify.ps1 -Repo <repo>` (build e testes com resumo), `stack.ps1 up|down|status` (Mongo, API, coletor, processor), `collector-check.ps1`, `board.ps1` (quadro). JDK 25 em `D:\Workspace\Languages-Frameworks\jdk-25.0.4.1+1`, Maven em `D:\Workspace\Languages-Frameworkspache-maven-3.10.0`. Agente delegado não roda git.
+
+## Invariantes (nunca quebrar)
+
+1. **Sempre há recomendação:** amostra abaixo do limite marca `lowSample`, não esconde dado.
+2. **Contrato do pacote:** só mudanças aditivas no `formatVersion` 2; documentos antigos continuam legíveis.
+3. **Anonimato:** nenhum identificador de jogador entra no pacote nem em fixture.
+4. **Uma regra, um lugar:** cada critério (ex.: "caminho com 3+ itens") num helper único.
+5. **Testes:** fixtures do contrato real; teste vermelho antes da implementação.
