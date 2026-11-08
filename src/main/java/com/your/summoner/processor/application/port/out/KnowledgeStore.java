@@ -14,8 +14,21 @@ public interface KnowledgeStore {
         return find(patch).map(snapshot -> new Snapshot(snapshot.patch(), snapshot.computedAt(), snapshot.matches(),
                 snapshot.ignoredBySchema(), snapshot.durationMillis(), snapshot.entries(), List.of()));
     }
+    /** Metadata only (ETag, status): adapters should override this to avoid loading the entries. */
+    default Optional<Summary> summary(PatchVersion patch) {
+        return findPublished(patch).map(snapshot -> new Summary(snapshot.patch(), snapshot.computedAt(),
+                snapshot.matches(), snapshot.ignoredBySchema(), snapshot.durationMillis(), snapshot.entries().size()));
+    }
+    /** One published entry; adapters should override this to avoid loading the whole package. */
+    default Optional<ChampionKnowledge> findEntry(PatchVersion patch, int championId, String position) {
+        return findPublished(patch).flatMap(snapshot -> snapshot.entries().stream()
+                .filter(entry -> entry.championId() == championId && entry.position().equals(position)).findFirst());
+    }
     List<PatchVersion> patches();
     void remove(PatchVersion patch);
+
+    record Summary(PatchVersion patch, Instant computedAt, long matches, long ignoredBySchema,
+                   long durationMillis, int entries) {}
 
     record Snapshot(PatchVersion patch, Instant computedAt, long matches, long ignoredBySchema,
                     long durationMillis, List<ChampionKnowledge> entries, List<Decision> decisions) {

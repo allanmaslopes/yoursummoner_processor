@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public record KnowledgeResponse(String patch, int championId, String position, int games, int wins,
@@ -27,7 +28,7 @@ public record KnowledgeResponse(String patch, int championId, String position, i
                                 List<SpellPairResponse> summonerSpells, PrimaryResponse primary) {
     static KnowledgeResponse from(ChampionKnowledge value) {
         var components = value.componentsBefore().entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey, entry -> sequences(entry.getValue())));
+                Map.Entry::getKey, entry -> sequences(entry.getValue()), (a, b) -> a, TreeMap::new));
         return new KnowledgeResponse(value.patch(), value.championId(), value.position(), value.games(), value.wins(),
                 rate(value.wins(), value.games()), sequences(value.starting()), sequences(value.boots()),
                 sequences(value.buildPaths()),

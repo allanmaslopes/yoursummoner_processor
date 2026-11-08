@@ -138,6 +138,37 @@ class KnowledgeApiTest {
     }
 
     @Test
+    void notModifiedSingleEntryAndStatusDoNotLoadTheFullPackage() throws Exception {
+        String etag = mvc.perform(get("/processor/knowledge/16.22").contextPath("/processor"))
+                .andReturn().getResponse().getHeader(HttpHeaders.ETAG);
+        store.fullLoads = 0;
+
+        mvc.perform(get("/processor/knowledge/16.22").contextPath("/processor")
+                .header(HttpHeaders.IF_NONE_MATCH, etag)).andExpect(status().isNotModified());
+        mvc.perform(get("/processor/knowledge/16.22/1/TOP").contextPath("/processor")).andExpect(status().isOk());
+        mvc.perform(get("/processor/status").contextPath("/processor")).andExpect(status().isOk());
+
+        assertThat(store.fullLoads).as("full package loads").isZero();
+    }
+
+    @Test
+    void componentsBeforeKeysAreSortedInTheResponse() throws Exception {
+        var sequence = new SequenceStat(List.of(1055), 3, 1);
+        var components = Map.of(3031, List.of(sequence), 1001, List.of(sequence), 2003, List.of(sequence));
+        var entry = new ChampionKnowledge("16.22", 9, "TOP", 3, 2, List.of(), List.of(), List.of(), List.of(),
+                List.of(), components, List.of(), "R > Q > W > E", List.of(), false, List.of(), List.of(),
+                List.of(), null);
+
+        assertThat(KnowledgeResponse.from(entry).componentsBefore().keySet()).containsExactly(1001, 2003, 3031);
+        store.publish(new KnowledgeStore.Snapshot(PATCH, COMPUTED_AT, 1, 0, 1, List.of(entry), List.of()));
+        String json = mvc.perform(get("/processor/knowledge/16.22/9/TOP").contextPath("/processor"))
+                .andReturn().getResponse().getContentAsString();
+        assertThat(json.indexOf("\"1001\"")).isPositive().isLessThan(json.indexOf("\"2003\""))
+                .isLessThan(json.indexOf("\"3031\""));
+        assertThat(json.indexOf("\"2003\"")).isLessThan(json.indexOf("\"3031\""));
+    }
+
+    @Test
     void statusShowsPerPatch() throws Exception {
         store.publish(snapshot(new PatchVersion(16, 21), COMPUTED_AT.minusSeconds(60)));
         mvc.perform(get("/processor/status").contextPath("/processor"))
@@ -179,8 +210,19 @@ class KnowledgeApiTest {
         @Override public Optional<Snapshot> find(PatchVersion patch) {
             throw new AssertionError("Public API must not load decisions");
         }
+        int fullLoads;
         @Override public Optional<Snapshot> findPublished(PatchVersion patch) {
+            fullLoads++;
             return Optional.ofNullable(snapshots.get(patch));
+        }
+        // Like the Mongo adapter: metadata and single entries without loading the whole package.
+        @Override public Optional<Summary> summary(PatchVersion patch) {
+            return Optional.ofNullable(snapshots.get(patch)).map(s -> new Summary(s.patch(), s.computedAt(),
+                    s.matches(), s.ignoredBySchema(), s.durationMillis(), s.entries().size()));
+        }
+        @Override public Optional<ChampionKnowledge> findEntry(PatchVersion patch, int championId, String position) {
+            return Optional.ofNullable(snapshots.get(patch)).flatMap(s -> s.entries().stream()
+                    .filter(e -> e.championId() == championId && e.position().equals(position)).findFirst());
         }
         @Override public List<PatchVersion> patches() { return List.copyOf(snapshots.keySet()); }
         @Override public void remove(PatchVersion patch) { snapshots.remove(patch); }

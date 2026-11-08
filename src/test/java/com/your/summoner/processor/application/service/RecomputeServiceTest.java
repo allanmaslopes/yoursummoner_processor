@@ -6,7 +6,12 @@ import com.your.summoner.processor.application.service.ParticipantExtractor.Deci
 import com.your.summoner.processor.domain.model.MatchRecord;
 import com.your.summoner.processor.domain.model.PatchVersion;
 import com.your.summoner.processor.domain.model.SequenceStat;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,11 +75,27 @@ class RecomputeServiceTest {
         assertThat(store.find(PATCH).orElseThrow().entries()).extracting(entry -> entry.championId())
                 .containsOnly(1);
         assertThat(source.closed).isEqualTo(1);
+    }
 
-        source.matches.clear();
-        service.recompute();
-        assertThat(store.patches()).isEmpty();
-        assertThat(store.find(PATCH)).isEmpty();
+    @Test void emptySourceKeepsPublishedPatchesAndWarns() {
+        var source = new Source();
+        var store = new MemoryStore();
+        var published = snapshot(PATCH, 99);
+        store.publish(published);
+        var service = new RecomputeService(source, patch -> 0, patch -> catalog(), store, 1, 1, 5);
+        var logger = (Logger) LoggerFactory.getLogger(RecomputeService.class);
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            service.recompute();
+        } finally {
+            logger.detachAppender(appender);
+        }
+
+        assertThat(store.find(PATCH)).contains(published);
+        assertThat(appender.list).filteredOn(event -> event.getLevel() == Level.WARN)
+                .singleElement().satisfies(event -> assertThat(event.getFormattedMessage()).contains("16.22"));
     }
 
     @Test void closesMatchStreamAndKeepsPublishedPackageWhenReadingFails() {

@@ -6,7 +6,9 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.event.CommandListener;
 import com.mongodb.event.CommandStartedEvent;
 import com.mongodb.event.CommandSucceededEvent;
+import com.your.summoner.processor.application.port.out.KnowledgeStore.Decision;
 import com.your.summoner.processor.application.port.out.KnowledgeStore.Snapshot;
+import com.your.summoner.processor.application.service.ParticipantExtractor.DecisionSample;
 import com.your.summoner.processor.application.service.RecomputeService;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
 import com.your.summoner.processor.domain.model.FullBuildPathStat;
@@ -134,6 +136,56 @@ class MongoKnowledgeStoreTest {
 
         assertThat(store.find(PATCH)).contains(snapshot);
         assertThat(metadata().get("formatVersion")).isEqualTo(2);
+    }
+
+    @Test void roundTripKeepsComponentsBeforeSequencesAndDecisions() {
+        var sequence = new SequenceStat(List.of(1055, 2003), 4, 3);
+        var other = new SequenceStat(List.of(3031), 2, 1);
+        var entry = new ChampionKnowledge(PATCH.toString(), 5, "MID", 6, 4,
+                List.of(sequence), List.of(other), List.of(sequence, other), List.of(), List.of(sequence),
+                Map.of(3031, List.of(sequence, other), 3153, List.of(other)), List.of(sequence),
+                "R > Q > W > E", List.of(), false, List.of(), List.of(), List.of(), null);
+        var decisions = List.of(
+                new Decision(5, "MID", new DecisionSample(10, 3031, 500, 1, 3, 2, true)),
+                new Decision(5, "MID", new DecisionSample(1, 1055, 2000, 0, 1, 0, false)));
+        var expected = new Snapshot(PATCH, snapshot(PATCH, 1).computedAt(), 6, 1, 12, List.of(entry), decisions);
+
+        store.publish(expected);
+
+        var result = store.find(PATCH).orElseThrow();
+        assertThat(result).isEqualTo(expected);
+        assertThat(result.entries().getFirst().componentsBefore()).containsOnlyKeys(3031, 3153);
+        assertThat(result.decisions()).isEqualTo(decisions);
+    }
+
+    @Test void orphanCollectionsAreDroppedAtStartup() {
+        store.publish(snapshot(PATCH, 1));
+        var meta = metadata();
+        for (var orphan : List.of("knowledge_16.20_dead", "decision_samples_16.20_dead")) mongo.createCollection(orphan);
+        mongo.createCollection("unrelated");
+
+        store.dropOrphans();
+
+        assertThat(mongo.getCollectionNames()).contains("unrelated", "knowledge_meta",
+                meta.getString("activeCollection"), meta.getString("activeDecisionCollection"))
+                .doesNotContain("knowledge_16.20_dead", "decision_samples_16.20_dead");
+        assertThat(store.find(PATCH)).contains(snapshot(PATCH, 1));
+    }
+
+    @Test void summaryAndSingleEntryReadWithoutLoadingThePackage() {
+        var published = snapshot(PATCH, 7);
+        store.publish(published);
+
+        var summary = store.summary(PATCH).orElseThrow();
+        assertThat(summary.computedAt()).isEqualTo(published.computedAt());
+        assertThat(summary.matches()).isEqualTo(30);
+        assertThat(summary.ignoredBySchema()).isEqualTo(2);
+        assertThat(summary.durationMillis()).isEqualTo(25);
+        assertThat(summary.entries()).isEqualTo(1);
+        assertThat(store.findEntry(PATCH, 7, "TOP")).contains(published.entries().getFirst());
+        assertThat(store.findEntry(PATCH, 7, "MID")).isEmpty();
+        assertThat(store.findEntry(PATCH, 8, "TOP")).isEmpty();
+        assertThat(store.summary(new PatchVersion(1, 1))).isEmpty();
     }
 
     @Test void readsV1DocumentWithoutV2Fields() {

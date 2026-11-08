@@ -3,6 +3,7 @@ package com.your.summoner.processor.infrastructure.adapter.out.mongo;
 import com.your.summoner.processor.application.port.out.KnowledgeStore;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
 import com.your.summoner.processor.domain.model.PatchVersion;
+import jakarta.annotation.PostConstruct;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +14,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Component
 public final class MongoKnowledgeStore implements KnowledgeStore {
@@ -61,22 +64,60 @@ public final class MongoKnowledgeStore implements KnowledgeStore {
         return read(patch, false);
     }
 
+    @Override public Optional<Summary> summary(PatchVersion patch) {
+        return consistent(patch, meta -> new Summary(patch, Instant.parse(meta.getString("computedAt")),
+                number(meta, "matches"), number(meta, "ignoredBySchema"), number(meta, "durationMillis"),
+                (int) mongo.getCollection(meta.getString("activeCollection")).countDocuments()));
+    }
+
+    @Override public Optional<ChampionKnowledge> findEntry(PatchVersion patch, int championId, String position) {
+        var query = Query.query(Criteria.where("championId").is(championId).and("position").is(position));
+        return consistent(patch, meta -> mongo.findOne(query, ChampionKnowledge.class, meta.getString("activeCollection")));
+    }
+
     private Optional<Snapshot> read(PatchVersion patch, boolean includeDecisions) {
+        return consistent(patch, before -> {
+            var entries = mongo.findAll(ChampionKnowledge.class, before.getString("activeCollection"));
+            var decisions = includeDecisions
+                    ? mongo.findAll(Decision.class, before.getString("activeDecisionCollection")) : List.<Decision>of();
+            return new Snapshot(patch, Instant.parse(before.getString("computedAt")),
+                    number(before, "matches"), number(before, "ignoredBySchema"),
+                    number(before, "durationMillis"), entries, decisions);
+        });
+    }
+
+    /** Runs the read against the active metadata and retries if a concurrent swap changed it meanwhile. */
+    private <T> Optional<T> consistent(PatchVersion patch, Function<Document, T> reader) {
         while (true) {
             var before = metadata(patch);
             if (before == null) return Optional.empty();
             try {
-                var entries = mongo.findAll(ChampionKnowledge.class, before.getString("activeCollection"));
-                var decisions = includeDecisions
-                        ? mongo.findAll(Decision.class, before.getString("activeDecisionCollection")) : List.<Decision>of();
+                var result = reader.apply(before);
                 // A concurrent swap may already have dropped one of the collections just read.
                 if (!Objects.equals(before, metadata(patch))) continue;
-                return Optional.of(new Snapshot(patch, Instant.parse(before.getString("computedAt")),
-                        number(before, "matches"), number(before, "ignoredBySchema"),
-                        number(before, "durationMillis"), entries, decisions));
+                return Optional.ofNullable(result);
             } catch (RuntimeException failure) {
                 if (!Objects.equals(before, metadata(patch))) continue;
                 throw failure;
+            }
+        }
+    }
+
+    /** Drops knowledge_* / decision_samples_* collections no metadata points to (leftovers of a crash mid-publish). */
+    @PostConstruct void dropOrphans() {
+        var referenced = new HashSet<String>();
+        for (var meta : mongo.findAll(Document.class, META)) {
+            referenced.add(meta.getString("activeCollection"));
+            referenced.add(meta.getString("activeDecisionCollection"));
+        }
+        for (var name : mongo.getCollectionNames()) {
+            boolean ours = name.startsWith("knowledge_") || name.startsWith("decision_samples_");
+            if (!ours || name.equals(META) || referenced.contains(name)) continue;
+            try {
+                mongo.dropCollection(name);
+                LOG.warn("Dropped orphan collection {}", name);
+            } catch (RuntimeException failure) {
+                LOG.warn("Could not drop orphan collection {}: {}", name, failure.toString());
             }
         }
     }

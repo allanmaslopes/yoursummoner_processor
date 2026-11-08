@@ -54,9 +54,15 @@ public final class RecomputeService {
                 suppressed.add(failure);
             }
         }
-        var retained = new HashSet<>(patches);
-        for (var patch : store.patches()) {
-            if (!retained.contains(patch)) store.remove(patch);
+        var published = store.patches();
+        if (patches.isEmpty()) {
+            // An empty source is more likely an outage than a real purge: keep what is published.
+            if (!published.isEmpty()) LOG.warn("Source returned no patches; keeping published patches {}", published);
+        } else {
+            var retained = new HashSet<>(patches);
+            for (var patch : published) {
+                if (!retained.contains(patch)) store.remove(patch);
+            }
         }
         if (!failures.isEmpty()) {
             var aggregate = new IllegalStateException("Recompute failed for patches: " + String.join(", ", failures));

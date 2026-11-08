@@ -13,10 +13,10 @@ public class StatusController {
 
     @GetMapping("/status")
     public Status status() {
-        return new Status(store.patches().stream().sorted().flatMap(patch -> store.findPublished(patch).stream())
-                .map(snapshot -> new PatchStatus(snapshot.patch().toString(), snapshot.matches(),
-                        snapshot.ignoredBySchema(), snapshot.entries().size(), snapshot.computedAt().toString(),
-                        snapshot.durationMillis())).toList());
+        return new Status(store.patches().stream().sorted().flatMap(patch -> store.summary(patch).stream())
+                .map(summary -> new PatchStatus(summary.patch().toString(), summary.matches(),
+                        summary.ignoredBySchema(), summary.entries(), summary.computedAt().toString(),
+                        summary.durationMillis())).toList());
     }
 
     public record Status(List<PatchStatus> patches) {}

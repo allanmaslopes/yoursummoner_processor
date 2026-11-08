@@ -24,12 +24,17 @@ public class KnowledgeController {
 
     @GetMapping("/{patch}")
     public ResponseEntity<?> packageFor(@PathVariable String patch, ServletWebRequest request) {
-        var snapshot = PatchVersion.parse(patch).flatMap(store::findPublished);
+        var parsed = PatchVersion.parse(patch);
+        var summary = parsed.flatMap(store::summary);
+        if (summary.isEmpty()) return notFound();
+        String current = etag(summary.get().computedAt().toString());
+        // Weak-compares If-None-Match (W/, lists, *); Tomcat gzips only responses without a strong ETag.
+        if (isWildcard(request) || request.checkNotModified(current)) return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(current).build();
+        var snapshot = store.findPublished(parsed.get());
         if (snapshot.isEmpty()) return notFound();
         var value = snapshot.get();
+        // The ETag comes from the package actually served, even if a swap happened since the summary.
         String etag = etag(value.computedAt().toString());
-        // Weak-compares If-None-Match (W/, lists, *); Tomcat gzips only responses without a strong ETag.
-        if (isWildcard(request) || request.checkNotModified(etag)) return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(etag).build();
         return ResponseEntity.ok().eTag(etag).body(new KnowledgePackage(2, value.patch().toString(),
                 value.computedAt().toString(), value.matches(),
                 value.entries().stream().map(KnowledgeResponse::from).toList()));
@@ -38,10 +43,7 @@ public class KnowledgeController {
     @GetMapping("/{patch}/{championId}/{position}")
     public ResponseEntity<?> entry(@PathVariable String patch, @PathVariable int championId,
                                    @PathVariable String position) {
-        return PatchVersion.parse(patch).flatMap(store::findPublished)
-                .flatMap(snapshot -> snapshot.entries().stream()
-                        .filter(entry -> entry.championId() == championId && entry.position().equals(position))
-                        .findFirst())
+        return PatchVersion.parse(patch).flatMap(parsed -> store.findEntry(parsed, championId, position))
                 .<ResponseEntity<?>>map(entry -> ResponseEntity.ok(KnowledgeResponse.from(entry)))
                 .orElseGet(KnowledgeController::notFound);
     }
