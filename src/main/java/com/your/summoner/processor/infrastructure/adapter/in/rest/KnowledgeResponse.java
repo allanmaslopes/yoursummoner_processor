@@ -25,7 +25,8 @@ public record KnowledgeResponse(String patch, int championId, String position, i
                                 List<SequenceResponse> skillOrders, String skillPriority,
                                 List<ItemResponse> itemWinRates, boolean lowSample,
                                 List<KeystoneResponse> keystones, List<RunePageResponse> runePages,
-                                List<SpellPairResponse> summonerSpells, PrimaryResponse primary) {
+                                List<SpellPairResponse> summonerSpells, PrimaryResponse primary,
+                                List<GoldCurveResponse> goldCurve) {
     static KnowledgeResponse from(ChampionKnowledge value) {
         var components = value.componentsBefore().entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey, entry -> sequences(entry.getValue()), (a, b) -> a, TreeMap::new));
@@ -39,7 +40,8 @@ public record KnowledgeResponse(String patch, int championId, String position, i
                 value.keystones().stream().map(KeystoneResponse::from).toList(),
                 value.runePages().stream().map(RunePageResponse::from).toList(),
                 value.summonerSpells().stream().map(SpellPairResponse::from).toList(),
-                value.primary() == null ? null : PrimaryResponse.from(value.primary()));
+                value.primary() == null ? null : PrimaryResponse.from(value.primary()),
+                value.goldCurve().stream().map(GoldCurveResponse::from).toList());
     }
 
     private static List<SequenceResponse> sequences(List<SequenceStat> values) {
@@ -109,6 +111,12 @@ public record KnowledgeResponse(String patch, int championId, String position, i
     public record PrimaryResponse(int keystone, List<Integer> summonerSpells, boolean summonerSpellsLowSample) {
         static PrimaryResponse from(PrimaryRecommendation value) {
             return new PrimaryResponse(value.keystone(), value.summonerSpells(), value.summonerSpellsLowSample());
+        }
+    }
+
+    public record GoldCurveResponse(int minute, int medianTotalGold, int games) {
+        static GoldCurveResponse from(ChampionKnowledge.GoldCurvePoint value) {
+            return new GoldCurveResponse(value.minute(), value.medianTotalGold(), value.games());
         }
     }
 }

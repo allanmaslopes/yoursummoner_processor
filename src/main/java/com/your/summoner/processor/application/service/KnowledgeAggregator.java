@@ -21,6 +21,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public final class KnowledgeAggregator {
+    private static final int GOLD_CURVE_STEP_MINUTES = 5;
+    private static final int GOLD_CURVE_MAX_MINUTE = 40;
+    private static final int GOLD_CURVE_MIN_GAMES = 10;
     private static final Comparator<SequenceStat> SEQUENCE_ORDER =
             Comparator.comparingInt(SequenceStat::games).reversed()
                     .thenComparing(Comparator.comparingDouble(
@@ -112,7 +115,39 @@ public final class KnowledgeAggregator {
                 (int) views.stream().filter(ParticipantView::win).count(),
                 starting, boots, buildPaths, fullBuildPaths, purchaseTree, componentsBefore, skills,
                 skillPriority(skills), itemWinRates, views.size() < minGames,
-                keystones, runePages, spellPairs, primary);
+                keystones, runePages, spellPairs, primary, goldCurve(views));
+    }
+
+    private List<ChampionKnowledge.GoldCurvePoint> goldCurve(List<ParticipantView> views) {
+        var goldByMinute = new TreeMap<Integer, List<Integer>>();
+        for (var view : views) {
+            var goldByMinuteForParticipant = new HashMap<Integer, Integer>();
+            for (var sample : view.goldSamples()) {
+                if (sample.minute() > 0 && sample.minute() <= GOLD_CURVE_MAX_MINUTE
+                        && sample.minute() % GOLD_CURVE_STEP_MINUTES == 0) {
+                    goldByMinuteForParticipant.putIfAbsent(sample.minute(), sample.totalGold());
+                }
+            }
+            goldByMinuteForParticipant.forEach((minute, totalGold) -> goldByMinute
+                    .computeIfAbsent(minute, ignored -> new ArrayList<>()).add(totalGold));
+        }
+        return goldByMinute.entrySet().stream()
+                .filter(entry -> hasMinimumGoldCurveGames(entry.getValue()))
+                .map(entry -> new ChampionKnowledge.GoldCurvePoint(entry.getKey(), median(entry.getValue()),
+                        entry.getValue().size()))
+                .toList();
+    }
+
+    private boolean hasMinimumGoldCurveGames(List<Integer> goldValues) {
+        return goldValues.size() >= GOLD_CURVE_MIN_GAMES;
+    }
+
+    private int median(List<Integer> values) {
+        var sorted = values.stream().sorted().toList();
+        int middle = sorted.size() / 2;
+        return sorted.size() % 2 == 0
+                ? (int) (((long) sorted.get(middle - 1) + sorted.get(middle)) / 2)
+                : sorted.get(middle);
     }
 
     private boolean hasCompleteRunes(ParticipantView view) {

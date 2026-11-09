@@ -174,6 +174,18 @@ class ParticipantExtractorTest {
         assertEquals(runes, view.runes());
     }
 
+    @Test
+    void viewCarriesGoldFromItsSlotInEachFrame() {
+        var frames = List.of(
+                new Frame(5, states(1_000, 6, 900, 6), 1, 1),
+                new Frame(10, states(2_000, 9, 1_800, 8), 4, 2));
+
+        var view = viewForSlotOne(match(List.of(), frames));
+
+        assertEquals(List.of(new ParticipantExtractor.ParticipantView.GoldSample(5, 1_000),
+                new ParticipantExtractor.ParticipantView.GoldSample(10, 2_000)), view.goldSamples());
+    }
+
     private ParticipantExtractor.ParticipantView viewForSlotOne(MatchRecord match) {
         return extractor.extract(match, catalog()).getFirst();
     }

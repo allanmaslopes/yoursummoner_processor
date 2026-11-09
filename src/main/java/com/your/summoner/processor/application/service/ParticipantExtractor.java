@@ -77,7 +77,16 @@ public final class ParticipantExtractor {
                 finalCompleted,
                 decisions,
                 participant.summonerSpells(),
-                participant.runes());
+                participant.runes(),
+                goldSamples(participant.slot(), match.frames()));
+    }
+
+    private List<ParticipantView.GoldSample> goldSamples(int slot, List<Frame> frames) {
+        return frames.stream()
+                .flatMap(frame -> frame.slots().stream()
+                        .filter(state -> state.slot() == slot)
+                        .map(state -> new ParticipantView.GoldSample(frame.minute(), state.totalGold())))
+                .toList();
     }
 
     private List<TimelineEvent> effectivePurchases(int slot, List<TimelineEvent> events,
@@ -188,13 +197,28 @@ public final class ParticipantExtractor {
             List<Integer> finalCompleted,
             List<DecisionSample> decisions,
             List<Integer> summonerSpells,
-            MatchRecord.Runes runes) {
+            MatchRecord.Runes runes,
+            List<GoldSample> goldSamples) {
+        public ParticipantView {
+            goldSamples = goldSamples == null ? List.of() : List.copyOf(goldSamples);
+        }
+
+        public ParticipantView(int championId, String position, boolean win, List<Integer> starting, Integer boots,
+                               List<Integer> completedOrder, List<Integer> treeOrder, List<Integer> skillOrder,
+                               List<Integer> finalCompleted, List<DecisionSample> decisions,
+                               List<Integer> summonerSpells, MatchRecord.Runes runes) {
+            this(championId, position, win, starting, boots, completedOrder, treeOrder, skillOrder, finalCompleted,
+                    decisions, summonerSpells, runes, List.of());
+        }
+
         public ParticipantView(int championId, String position, boolean win, List<Integer> starting, Integer boots,
                                List<Integer> completedOrder, List<Integer> treeOrder, List<Integer> skillOrder,
                                List<Integer> finalCompleted, List<DecisionSample> decisions) {
             this(championId, position, win, starting, boots, completedOrder, treeOrder, skillOrder, finalCompleted,
                     decisions, List.of(), new MatchRecord.Runes(0, 0, List.of(), null));
         }
+
+        public record GoldSample(int minute, int totalGold) {}
     }
 
     public record DecisionSample(

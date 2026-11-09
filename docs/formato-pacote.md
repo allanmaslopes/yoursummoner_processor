@@ -34,6 +34,7 @@ Cada entrada contém:
 | `runePages` | array | Uma página por runa principal listada (a página completa mais frequente dela). |
 | `summonerSpells` | array | Duplas de feitiços mais frequentes: `sequence` (menor id primeiro), `games`, `wins`, `winRate`, `lowSample`. |
 | `primary` | objeto ou `null` | Recomendação principal: `keystone`, `summonerSpells`, `summonerSpellsLowSample`. |
+| `goldCurve` | array | Referência de ouro total acumulado por minuto: pontos a cada 5 minutos de 5 a 40, com `minute`, `medianTotalGold` e `games`; um ponto só é publicado com ao menos 10 partidas. |
 
 Cada elemento de `runePages` tem `keystone`, `primaryStyle`, `subStyle`, `perks` (6 runas na ordem dos slots; a primeira é a runa principal), `statPerks` (`{offense, flex, defense}` ou `null` quando nenhuma partida da página guardou fragmentos), `games`, `wins`, `winRate`, `lowSample`, `buildPath` (`{sequence, games, wins, winRate}` ou `null`), `buildPathLowSample` e `fullBuildPath` (build completa ou `null`). `buildPath` é o caminho de itens mais frequente de quem usou a runa principal; se ele tiver menos de `processor.min-occurrences` (10) partidas e o caminho geral tiver mais, usa o geral; é `null` só quando nenhuma partida da entrada tem três itens completos. `fullBuildPath` é a build completa mais frequente entre as partidas daquela página com cinco ou mais itens; quando não há uma, usa a primeira de `fullBuildPaths` da entrada, ou `null` se também não houver build geral. `primary.keystone` aponta para a entrada de `runePages` a usar.
 

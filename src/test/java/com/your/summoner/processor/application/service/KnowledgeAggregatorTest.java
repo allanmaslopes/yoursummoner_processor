@@ -433,6 +433,72 @@ class KnowledgeAggregatorTest {
         assertEquals(1, result.get(2).games());
     }
 
+    @Test
+    void goldCurveUsesIntegerMedianForEvenAndOddGameCounts() {
+        var views = new ArrayList<ParticipantView>();
+        for (int gold = 100; gold <= 1_000; gold += 100) {
+            views.add(curveView(List.of(new ParticipantView.GoldSample(5, gold),
+                    new ParticipantView.GoldSample(10, gold))));
+        }
+        views.add(curveView(List.of(new ParticipantView.GoldSample(10, 1_100))));
+
+        assertEquals(List.of(
+                new ChampionKnowledge.GoldCurvePoint(5, 550, 10),
+                new ChampionKnowledge.GoldCurvePoint(10, 600, 11)),
+                top(views.stream(), 1, 1, 5).goldCurve());
+    }
+
+    @Test
+    void goldCurveCountsDuplicateFramesForTheSameParticipantAndMinuteOnce() {
+        var views = new ArrayList<ParticipantView>();
+        for (int gold = 100; gold <= 1_000; gold += 100) {
+            views.add(curveView(List.of(new ParticipantView.GoldSample(5, gold),
+                    new ParticipantView.GoldSample(5, 10_000))));
+        }
+
+        assertEquals(List.of(new ChampionKnowledge.GoldCurvePoint(5, 550, 10)),
+                top(views.stream(), 1, 1, 5).goldCurve());
+    }
+
+    @Test
+    void goldCurveDoesNotCountShortGamesAtMinutesTheyDoNotHave() {
+        var views = new ArrayList<ParticipantView>();
+        for (int ignored = 0; ignored < 10; ignored++) {
+            views.add(curveView(List.of(new ParticipantView.GoldSample(10, 1_000))));
+        }
+        views.add(curveView(List.of(new ParticipantView.GoldSample(5, 500))));
+
+        assertEquals(List.of(new ChampionKnowledge.GoldCurvePoint(10, 1_000, 10)),
+                top(views.stream(), 1, 1, 5).goldCurve());
+    }
+
+    @Test
+    void goldCurveOmitsPointsBelowMinimumGames() {
+        var views = new ArrayList<ParticipantView>();
+        for (int ignored = 0; ignored < 9; ignored++) {
+            views.add(curveView(List.of(new ParticipantView.GoldSample(5, 500))));
+        }
+
+        assertTrue(top(views.stream(), 1, 1, 5).goldCurve().isEmpty());
+    }
+
+    @Test
+    void goldCurveIsEmptyWhenEntryHasNoFrames() {
+        assertTrue(top(Stream.of(view("TOP", true, List.of())), 1, 1, 5).goldCurve().isEmpty());
+    }
+
+    @Test
+    void goldCurveIsOrderedByMinute() {
+        var views = new ArrayList<ParticipantView>();
+        for (int ignored = 0; ignored < 10; ignored++) {
+            views.add(curveView(List.of(new ParticipantView.GoldSample(10, 1_000),
+                    new ParticipantView.GoldSample(5, 500))));
+        }
+
+        assertEquals(List.of(5, 10), top(views.stream(), 1, 1, 5).goldCurve().stream()
+                .map(ChampionKnowledge.GoldCurvePoint::minute).toList());
+    }
+
     private ChampionKnowledge top(Stream<ParticipantView> views, int minGames, int minOccurrences, int topN) {
         return aggregator.aggregate("16.1", views, minGames, minOccurrences, topN).stream()
                 .filter(entry -> "TOP".equals(entry.position())).findFirst().orElseThrow();
@@ -444,6 +510,11 @@ class KnowledgeAggregatorTest {
 
     private ParticipantView view(String position, boolean win, List<Integer> starting) {
         return new ParticipantView(266, position, win, starting, null, List.of(), List.of(), List.of(), List.of(), List.of());
+    }
+
+    private ParticipantView curveView(List<ParticipantView.GoldSample> goldSamples) {
+        return new ParticipantView(266, "TOP", true, List.of(), null, List.of(), List.of(), List.of(), List.of(),
+                List.of(), List.of(), new MatchRecord.Runes(0, 0, List.of(), null), goldSamples);
     }
 
     private ParticipantView skills(boolean win, List<Integer> order) {
