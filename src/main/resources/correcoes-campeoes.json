@@ -1,0 +1,9 @@
+[
+  {"championId": 62, "tags": {"add": ["cura-propria"], "remove": []}, "nota": "Wukong com Conquistador"},
+  {"championId": 200, "tags": {"add": ["cura-propria"], "remove": []}, "nota": "Bel'Veth com bota vampÃ­rica"},
+  {"championId": 111, "tags": {"add": ["controle-forte"], "remove": []}, "nota": "Nautilus"},
+  {"championId": 85, "tags": {"add": ["dano-magico"], "remove": []}, "nota": "Kennen"},
+  {"championId": 112, "tags": {"add": ["dano-magico"], "remove": []}, "nota": "Viktor"},
+  {"championId": 104, "tags": {"add": ["dano-fisico", "critico", "ataque-basico"], "remove": []}, "nota": "Graves"},
+  {"championId": 51, "tags": {"add": ["dano-fisico", "critico", "ataque-basico"], "remove": []}, "nota": "Caitlyn"}
+]

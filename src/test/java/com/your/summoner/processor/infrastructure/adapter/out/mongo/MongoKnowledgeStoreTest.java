@@ -11,6 +11,7 @@ import com.your.summoner.processor.application.port.out.KnowledgeStore.Snapshot;
 import com.your.summoner.processor.application.service.ParticipantExtractor.DecisionSample;
 import com.your.summoner.processor.application.service.RecomputeService;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
+import com.your.summoner.processor.domain.model.ChampionProfile;
 import com.your.summoner.processor.domain.model.FullBuildPathStat;
 import com.your.summoner.processor.domain.model.KeystoneStat;
 import com.your.summoner.processor.domain.model.MatchRecord;
@@ -138,6 +139,54 @@ class MongoKnowledgeStoreTest {
         assertThat(metadata().get("formatVersion")).isEqualTo(2);
     }
 
+    @Test void profilesRoundTripAndParticipateInAtomicPublication() throws Exception {
+        var oldProfile = new ChampionProfile(7, 3, 0.7, 0.2, 0.1, 15.0, 80.0, List.of("controle-forte"));
+        var newProfile = new ChampionProfile(8, 4, 0.2, 0.7, 0.1, 20.0, 90.0, List.of("dano-magico"));
+        var oldPackage = withProfiles(snapshot(PATCH, 1), oldProfile);
+        var newPackage = withProfiles(snapshot(PATCH, 2), newProfile);
+        store.publish(oldPackage);
+        var oldProfiles = metadata().getString("activeProfileCollection");
+        gate.armed = true;
+        var publication = new FutureTask<Void>(() -> { store.publish(newPackage); return null; });
+        var writer = Thread.ofVirtual().start(publication);
+        try {
+            assertThat(gate.reached.await(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(store.find(PATCH)).contains(oldPackage);
+            assertThat(mongo.getCollection(oldProfiles).countDocuments()).isEqualTo(1);
+        } finally {
+            gate.release.countDown();
+            writer.join(TimeUnit.SECONDS.toMillis(10));
+        }
+        publication.get(10, TimeUnit.SECONDS);
+
+        assertThat(store.find(PATCH)).contains(newPackage);
+        assertThat(mongo.collectionExists(oldProfiles)).isFalse();
+        assertThat(versionedCollections("champion_profiles_"))
+                .containsExactly(metadata().getString("activeProfileCollection"));
+    }
+
+    @Test void profilesAreIncludedWhenReaderRetriesAfterSwap() throws Exception {
+        var oldPackage = withProfiles(snapshot(PATCH, 1),
+                new ChampionProfile(7, 1, 1.0, 0.0, 0.0, null, null, List.of()));
+        var newProfile = new ChampionProfile(8, 2, 0.1, 0.8, 0.1, 12.0, 50.0, List.of("dano-magico"));
+        var newPackage = withProfiles(snapshot(PATCH, 2), newProfile);
+        store.publish(oldPackage);
+        var oldProfiles = metadata().getString("activeProfileCollection");
+        gate.pauseRead = true;
+        var read = new FutureTask<Optional<Snapshot>>(() -> store.find(PATCH));
+        var reader = Thread.ofVirtual().start(read);
+        try {
+            assertThat(gate.readReached.await(10, TimeUnit.SECONDS)).isTrue();
+            store.publish(newPackage);
+            assertThat(mongo.collectionExists(oldProfiles)).isFalse();
+        } finally {
+            gate.readRelease.countDown();
+            reader.join(TimeUnit.SECONDS.toMillis(10));
+        }
+
+        assertThat(read.get(10, TimeUnit.SECONDS)).contains(newPackage);
+    }
+
     @Test void roundTripKeepsComponentsBeforeSequencesAndDecisions() {
         var sequence = new SequenceStat(List.of(1055, 2003), 4, 3);
         var other = new SequenceStat(List.of(3031), 2, 1);
@@ -161,14 +210,14 @@ class MongoKnowledgeStoreTest {
     @Test void orphanCollectionsAreDroppedAtStartup() {
         store.publish(snapshot(PATCH, 1));
         var meta = metadata();
-        for (var orphan : List.of("knowledge_16.20_dead", "decision_samples_16.20_dead")) mongo.createCollection(orphan);
+        for (var orphan : List.of("knowledge_16.20_dead", "decision_samples_16.20_dead", "champion_profiles_16.20_dead")) mongo.createCollection(orphan);
         mongo.createCollection("unrelated");
 
         store.dropOrphans();
 
         assertThat(mongo.getCollectionNames()).contains("unrelated", "knowledge_meta",
                 meta.getString("activeCollection"), meta.getString("activeDecisionCollection"))
-                .doesNotContain("knowledge_16.20_dead", "decision_samples_16.20_dead");
+                .doesNotContain("knowledge_16.20_dead", "decision_samples_16.20_dead", "champion_profiles_16.20_dead");
         assertThat(store.find(PATCH)).contains(snapshot(PATCH, 1));
     }
 
@@ -326,6 +375,9 @@ class MongoKnowledgeStoreTest {
 
         assertThat(store.find(PATCH).orElseThrow().matches()).isEqualTo(1);
         assertThat(store.find(PATCH).orElseThrow().ignoredBySchema()).isEqualTo(1);
+        assertThat(store.find(PATCH).orElseThrow().championProfiles()).filteredOn(profile -> profile.championId() == 266)
+                .containsExactly(new ChampionProfile(266, 1, 0.8264, 0.1653, 0.0083,
+                        42.0, 123.0, List.of()));
         assertThat(matches.countDocuments()).isEqualTo(2);
         assertThat(matches.find().sort(new Document("_id", 1)).into(new ArrayList<>())).isEqualTo(before);
         assertThat(client.getDatabase(sourceDatabase).listCollectionNames().into(new ArrayList<>()))
@@ -363,6 +415,11 @@ class MongoKnowledgeStoreTest {
     private List<String> versionedCollections(String prefix) {
         return mongo.getCollectionNames().stream()
                 .filter(name -> name.startsWith(prefix) && !name.equals("knowledge_meta")).sorted().toList();
+    }
+
+    private static Snapshot withProfiles(Snapshot snapshot, ChampionProfile... profiles) {
+        return new Snapshot(snapshot.patch(), snapshot.computedAt(), snapshot.matches(), snapshot.ignoredBySchema(),
+                snapshot.durationMillis(), snapshot.entries(), snapshot.decisions(), List.of(profiles));
     }
 
     private static final class SwapGate implements CommandListener {

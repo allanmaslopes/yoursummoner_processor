@@ -8,7 +8,10 @@
 | `patch` | string | Patch das partidas agregadas. |
 | `computedAt` | string | Instante do cálculo em ISO 8601 UTC. |
 | `matches` | número inteiro | Quantidade de partidas lidas para o patch. |
+| `championProfiles` | array | Perfil agregado por campeão no patch, complementar às entradas por posição. |
 | `entries` | array | Entradas publicadas por campeão e posição. |
+
+Cada elemento de `championProfiles` tem `championId`, `games`, `physicalShare`, `magicShare`, `trueShare`, `ccSecondsPerGame`, `healPerGame` e `tags`. As frações de dano a campeões ficam entre 0 e 1, arredondadas a quatro casas. `ccSecondsPerGame` e `healPerGame` são `null` quando o campo correspondente não existe nas partidas coletadas; partidas antigas sem esses campos não contam como zero na média. `tags` resulta da mescla de `data/correcoes-campeoes.json` antes da publicação; o arquivo é uma lista versionada de `{championId, tags: {add, remove}, nota}`.
 
 Cada entrada contém:
 

@@ -35,6 +35,8 @@ public final class MongoMatchSource implements MatchSource, MatchSourceMetrics, 
             "participants.win", "participants.items", "participants.summonerSpells", "participants.runes.primaryStyle",
             "participants.runes.subStyle", "participants.runes.perks", "participants.runes.statPerks.offense",
             "participants.runes.statPerks.flex", "participants.runes.statPerks.defense", "events.t", "events.slot", "events.type",
+            "participants.physicalDamage", "participants.magicDamage", "participants.trueDamage",
+            "participants.timeCCingOthers", "participants.totalHeal",
             "events.itemId", "events.skillSlot", "events.frame", "frames.minute", "frames.blueKills",
             "frames.redKills", "frames.slots.slot", "frames.slots.gold", "frames.slots.totalGold",
             "frames.slots.level", "frames.slots.xp", "frames.slots.cs");
@@ -92,7 +94,9 @@ public final class MongoMatchSource implements MatchSource, MatchSourceMetrics, 
         var participants = documents(document, "participants").stream().map(p -> new Participant(
                 number(p, "slot"), number(p, "team"), number(p, "championId"), p.getString("position") == null ? "" : p.getString("position"),
                 p.getBoolean("win", false), p.getList("items", Integer.class, List.of()),
-                p.getList("summonerSpells", Integer.class, List.of()), runes(p.get("runes", Document.class)))).toList();
+                p.getList("summonerSpells", Integer.class, List.of()), runes(p.get("runes", Document.class)),
+                number(p, "physicalDamage"), number(p, "magicDamage"), number(p, "trueDamage"),
+                optionalNumber(p, "timeCCingOthers"), optionalNumber(p, "totalHeal"))).toList();
         var events = documents(document, "events").stream().filter(MongoMatchSource::hasEventType)
                 .map(e -> new TimelineEvent(number(e, "t"), number(e, "slot"),
                 EventType.valueOf(e.getString("type")), e.getInteger("itemId"), e.getInteger("skillSlot"), e.getInteger("frame"))).toList();
@@ -119,6 +123,7 @@ public final class MongoMatchSource implements MatchSource, MatchSourceMetrics, 
 
     private static List<Document> documents(Document document, String field) { return document.getList(field, Document.class, List.of()); }
     private static int number(Document document, String field) { return document.getInteger(field, 0); }
+    private static Integer optionalNumber(Document document, String field) { return document.getInteger(field); }
 
     @PreDestroy
     @Override public void close() { if (ownedClient != null) ownedClient.close(); }

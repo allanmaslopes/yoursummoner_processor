@@ -11,6 +11,7 @@ import com.your.summoner.processor.domain.model.PatchVersion;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,16 @@ public final class RecomputeService {
     private final int topN;
     private final ParticipantExtractor extractor = new ParticipantExtractor();
     private final KnowledgeAggregator aggregator = new KnowledgeAggregator();
+    private final ChampionProfileAggregator profileAggregator;
 
     public RecomputeService(MatchSource source, MatchSourceMetrics metrics, ItemCatalogSource catalogs,
                             KnowledgeStore store, int minGames, int minOccurrences, int topN) {
+        this(source, metrics, catalogs, store, Map.of(), minGames, minOccurrences, topN);
+    }
+
+    public RecomputeService(MatchSource source, MatchSourceMetrics metrics, ItemCatalogSource catalogs,
+                            KnowledgeStore store, Map<Integer, ChampionProfileAggregator.Correction> corrections,
+                            int minGames, int minOccurrences, int topN) {
         if (minGames < 1 || minOccurrences < 1 || topN < 1) {
             throw new IllegalArgumentException("Publication thresholds must be positive");
         }
@@ -39,6 +47,7 @@ public final class RecomputeService {
         this.minGames = minGames;
         this.minOccurrences = minOccurrences;
         this.topN = topN;
+        this.profileAggregator = new ChampionProfileAggregator(corrections);
     }
 
     public synchronized void recompute() {
@@ -75,12 +84,15 @@ public final class RecomputeService {
         long started = System.nanoTime();
         var catalog = catalogs.forPatch(patch);
         var views = new ArrayList<ParticipantView>();
+        var profileAccumulator = profileAggregator.accumulator();
         var decisions = new ArrayList<Decision>();
         long matches = 0;
         try (var stream = source.byPatch(patch)) {
             var iterator = stream.iterator();
             while (iterator.hasNext()) {
-                var extracted = extractor.extract(iterator.next(), catalog);
+                var match = iterator.next();
+                profileAccumulator.add(match);
+                var extracted = extractor.extract(match, catalog);
                 matches++;
                 views.addAll(extracted);
                 for (var view : extracted) {
@@ -93,6 +105,7 @@ public final class RecomputeService {
         var entries = aggregator.aggregate(patch.toString(), views.stream(), minGames, minOccurrences, topN);
         long ignored = metrics.ignoredBySchema(patch);
         long duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
-        store.publish(new Snapshot(patch, Instant.now(), matches, ignored, duration, entries, decisions));
+        store.publish(new Snapshot(patch, Instant.now(), matches, ignored, duration, entries, decisions,
+                profileAccumulator.profiles()));
     }
 }

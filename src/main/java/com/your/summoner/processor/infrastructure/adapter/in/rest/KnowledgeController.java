@@ -37,7 +37,7 @@ public class KnowledgeController {
         String etag = etag(value.computedAt().toString());
         return ResponseEntity.ok().eTag(etag).body(new KnowledgePackage(2, value.patch().toString(),
                 value.computedAt().toString(), value.matches(),
-                value.entries().stream().map(KnowledgeResponse::from).toList()));
+                value.entries().stream().map(KnowledgeResponse::from).toList(), value.championProfiles()));
     }
 
     @GetMapping("/{patch}/{championId}/{position}")
@@ -67,5 +67,6 @@ public class KnowledgeController {
     }
 
     public record KnowledgePackage(int formatVersion, String patch, String computedAt, long matches,
-                                   java.util.List<KnowledgeResponse> entries) {}
+                                   java.util.List<KnowledgeResponse> entries,
+                                   java.util.List<com.your.summoner.processor.domain.model.ChampionProfile> championProfiles) {}
 }

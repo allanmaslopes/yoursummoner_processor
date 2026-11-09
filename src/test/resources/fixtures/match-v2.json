@@ -42,6 +42,8 @@
       "physicalDamage": 1000,
       "magicDamage": 200,
       "trueDamage": 10,
+      "timeCCingOthers": 42,
+      "totalHeal": 123,
       "damageTaken": 1500,
       "goldEarned": 4000,
       "cs": 60,

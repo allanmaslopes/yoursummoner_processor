@@ -14,9 +14,10 @@ public class RecomputeConfiguration {
     @Bean
     RecomputeService recomputeService(MatchSource source, MatchSourceMetrics metrics,
                                      ItemCatalogSource catalogs, KnowledgeStore store,
+                                     ChampionCorrections corrections,
                                      @Value("${processor.min-games:30}") int minGames,
                                      @Value("${processor.min-occurrences:10}") int minOccurrences,
                                      @Value("${processor.top-n:5}") int topN) {
-        return new RecomputeService(source, metrics, catalogs, store, minGames, minOccurrences, topN);
+        return new RecomputeService(source, metrics, catalogs, store, corrections.values(), minGames, minOccurrences, topN);
     }
 }

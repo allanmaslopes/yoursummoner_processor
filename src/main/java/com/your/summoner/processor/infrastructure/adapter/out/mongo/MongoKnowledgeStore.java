@@ -33,18 +33,22 @@ public final class MongoKnowledgeStore implements KnowledgeStore {
         String version = UUID.randomUUID().toString().replace("-", "");
         String knowledge = "knowledge_" + snapshot.patch() + "_" + version;
         String decisions = "decision_samples_" + snapshot.patch() + "_" + version;
+        String profiles = "champion_profiles_" + snapshot.patch() + "_" + version;
         try {
             mongo.createCollection(knowledge);
             mongo.createCollection(decisions);
+            mongo.createCollection(profiles);
             if (!snapshot.entries().isEmpty()) mongo.insert(snapshot.entries(), knowledge);
             if (!snapshot.decisions().isEmpty()) mongo.insert(snapshot.decisions(), decisions);
+            if (!snapshot.championProfiles().isEmpty()) mongo.insert(snapshot.championProfiles(), profiles);
         } catch (RuntimeException failure) {
-            discardStaging(knowledge, decisions, failure);
+            discardStaging(knowledge, decisions, profiles, failure);
             throw failure;
         }
         var update = new Update()
                 .set("activeCollection", knowledge)
                 .set("activeDecisionCollection", decisions)
+                .set("activeProfileCollection", profiles)
                 .set("computedAt", snapshot.computedAt().toString())
                 .set("matches", snapshot.matches())
                 .set("ignoredBySchema", snapshot.ignoredBySchema())
@@ -80,9 +84,12 @@ public final class MongoKnowledgeStore implements KnowledgeStore {
             var entries = mongo.findAll(ChampionKnowledge.class, before.getString("activeCollection"));
             var decisions = includeDecisions
                     ? mongo.findAll(Decision.class, before.getString("activeDecisionCollection")) : List.<Decision>of();
+            var profileCollection = before.getString("activeProfileCollection");
+            var profiles = profileCollection == null ? List.<com.your.summoner.processor.domain.model.ChampionProfile>of()
+                    : mongo.findAll(com.your.summoner.processor.domain.model.ChampionProfile.class, profileCollection);
             return new Snapshot(patch, Instant.parse(before.getString("computedAt")),
                     number(before, "matches"), number(before, "ignoredBySchema"),
-                    number(before, "durationMillis"), entries, decisions);
+                    number(before, "durationMillis"), entries, decisions, profiles);
         });
     }
 
@@ -109,9 +116,12 @@ public final class MongoKnowledgeStore implements KnowledgeStore {
         for (var meta : mongo.findAll(Document.class, META)) {
             referenced.add(meta.getString("activeCollection"));
             referenced.add(meta.getString("activeDecisionCollection"));
+            var profiles = meta.getString("activeProfileCollection");
+            if (profiles != null) referenced.add(profiles);
         }
         for (var name : mongo.getCollectionNames()) {
-            boolean ours = name.startsWith("knowledge_") || name.startsWith("decision_samples_");
+            boolean ours = name.startsWith("knowledge_") || name.startsWith("decision_samples_")
+                    || name.startsWith("champion_profiles_");
             if (!ours || name.equals(META) || referenced.contains(name)) continue;
             try {
                 mongo.dropCollection(name);
@@ -139,17 +149,19 @@ public final class MongoKnowledgeStore implements KnowledgeStore {
     private void dropCollections(Document metadata) {
         if (metadata == null) return;
         // Best effort: the swap or removal already succeeded, so a failed drop only leaves an orphan collection.
-        for (var field : List.of("activeCollection", "activeDecisionCollection")) {
+        for (var field : List.of("activeCollection", "activeDecisionCollection", "activeProfileCollection")) {
+            String collection = metadata.getString(field);
+            if (collection == null) continue;
             try {
-                mongo.dropCollection(metadata.getString(field));
+                mongo.dropCollection(collection);
             } catch (RuntimeException failure) {
-                LOG.warn("Could not drop old collection {}: {}", metadata.getString(field), failure.toString());
+                LOG.warn("Could not drop old collection {}: {}", collection, failure.toString());
             }
         }
     }
 
-    private void discardStaging(String knowledge, String decisions, RuntimeException failure) {
-        for (var collection : List.of(knowledge, decisions)) {
+    private void discardStaging(String knowledge, String decisions, String profiles, RuntimeException failure) {
+        for (var collection : List.of(knowledge, decisions, profiles)) {
             try {
                 mongo.dropCollection(collection);
             } catch (RuntimeException cleanupFailure) {

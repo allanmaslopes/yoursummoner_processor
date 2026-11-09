@@ -55,6 +55,20 @@ class MongoMatchSourceTest {
         assertThat(collection.find().into(new java.util.ArrayList<>())).isEqualTo(before);
     }
 
+    @Test void realV2FixtureMapsDamageCrowdControlAndHealing() throws Exception {
+        mongo.getCollection("matches").insertOne(match("fixture", "16.22", 2, 1));
+
+        try (var matches = source.byPatch(patch)) {
+            var participant = matches.findFirst().orElseThrow().participants().getFirst();
+
+            assertThat(participant.physicalDamage()).isEqualTo(1_000);
+            assertThat(participant.magicDamage()).isEqualTo(200);
+            assertThat(participant.trueDamage()).isEqualTo(10);
+            assertThat(participant.timeCCingOthers()).isEqualTo(42);
+            assertThat(participant.totalHeal()).isEqualTo(123);
+        }
+    }
+
     private Document match(String id, String patch, int schema, int order) throws Exception {
         String json;
         try (var input = getClass().getResourceAsStream("/fixtures/match-v2.json")) {

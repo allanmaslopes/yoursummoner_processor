@@ -11,7 +11,8 @@ public record MatchRecord(List<Participant> participants, List<TimelineEvent> ev
     }
 
     public record Participant(int slot, int team, int championId, String position, boolean win, List<Integer> items,
-                              List<Integer> summonerSpells, Runes runes) {
+                              List<Integer> summonerSpells, Runes runes, int physicalDamage, int magicDamage,
+                              int trueDamage, Integer timeCCingOthers, Integer totalHeal) {
         public Participant {
             items = List.copyOf(items);
             summonerSpells = summonerSpells == null ? List.of() : List.copyOf(summonerSpells);
@@ -19,7 +20,13 @@ public record MatchRecord(List<Participant> participants, List<TimelineEvent> ev
         }
 
         public Participant(int slot, int team, int championId, String position, boolean win, List<Integer> items) {
-            this(slot, team, championId, position, win, items, List.of(), new Runes(0, 0, List.of(), null));
+            this(slot, team, championId, position, win, items, List.of(), new Runes(0, 0, List.of(), null),
+                    0, 0, 0, null, null);
+        }
+
+        public Participant(int slot, int team, int championId, String position, boolean win, List<Integer> items,
+                           List<Integer> summonerSpells, Runes runes) {
+            this(slot, team, championId, position, win, items, summonerSpells, runes, 0, 0, 0, null, null);
         }
     }
     public record Runes(int primaryStyle, int subStyle, List<Integer> perks, StatPerks statPerks) {

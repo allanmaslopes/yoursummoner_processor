@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.your.summoner.processor.application.port.out.KnowledgeStore;
 import com.your.summoner.processor.domain.model.ChampionKnowledge;
+import com.your.summoner.processor.domain.model.ChampionProfile;
 import com.your.summoner.processor.domain.model.FullBuildPathStat;
 import com.your.summoner.processor.domain.model.ItemStat;
 import com.your.summoner.processor.domain.model.KeystoneStat;
@@ -51,6 +52,9 @@ class KnowledgeApiTest {
                 .andExpect(jsonPath("$.patch").value("16.22"))
                 .andExpect(jsonPath("$.computedAt").value(COMPUTED_AT.toString()))
                 .andExpect(jsonPath("$.matches").value(42))
+                .andExpect(jsonPath("$.championProfiles[0].championId").value(62))
+                .andExpect(jsonPath("$.championProfiles[0].physicalShare").value(0.5))
+                .andExpect(jsonPath("$.championProfiles[0].tags[0]").value("cura-propria"))
                 .andExpect(jsonPath("$.entries.length()").value(2))
                 .andExpect(jsonPath("$.entries[0].winRate").isNumber())
                 .andExpect(jsonPath("$.entries[0].winRate").value(0.6667))
@@ -201,7 +205,9 @@ class KnowledgeApiTest {
                 List.of(zeroSequence), List.of(), List.of(), List.of(), List.of(), Map.of(), List.of(),
                 "R > Q > W > E", List.of(new ItemStat(3031, 0, 0)),
                 false, List.of(), List.of(), List.of(), null);
-        return new KnowledgeStore.Snapshot(patch, computedAt, 42, 3, 125, List.of(entry, zeroEntry), List.of());
+        return new KnowledgeStore.Snapshot(patch, computedAt, 42, 3, 125, List.of(entry, zeroEntry), List.of(),
+                List.of(new ChampionProfile(62, 2, 0.5, 0.25, 0.25, 12.0, 200.0,
+                        List.of("cura-propria"))));
     }
 
     private static final class InMemoryStore implements KnowledgeStore {
