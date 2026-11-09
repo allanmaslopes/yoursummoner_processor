@@ -24,6 +24,7 @@ public final class KnowledgeAggregator {
     private static final int GOLD_CURVE_STEP_MINUTES = 5;
     private static final int GOLD_CURVE_MAX_MINUTE = 40;
     private static final int GOLD_CURVE_MIN_GAMES = 10;
+    private static final int BUILD_PATH_ITEMS = 3;
     private static final Comparator<SequenceStat> SEQUENCE_ORDER =
             Comparator.comparingInt(SequenceStat::games).reversed()
                     .thenComparing(Comparator.comparingDouble(
@@ -85,16 +86,15 @@ public final class KnowledgeAggregator {
         var boots = sequences(views, view -> view.boots() == null ? List.of() : List.of(view.boots()),
                 minOccurrences, topN);
         // Caminho com menos de 3 itens (partida curta) só entra se nenhum chegou a 3: sempre há recomendação.
-        var buildPaths = sequences(views, view -> view.completedOrder().size() >= 3
-                ? firstItems(view.completedOrder(), 3) : List.of(), minOccurrences, topN);
+        var buildPaths = sequences(views, this::fullLengthBuildPath, minOccurrences, topN);
         if (buildPaths.isEmpty()) {
-            buildPaths = sequences(views, view -> firstItems(view.completedOrder(), 3), minOccurrences, topN);
+            buildPaths = sequences(views, view -> firstItems(view.completedOrder(), BUILD_PATH_ITEMS),
+                    minOccurrences, topN);
         }
         var fullBuildPaths = fullBuildPaths(views, minOccurrences, topN);
         var generalFullBuildPath = fullBuildPaths.stream().findFirst().orElse(null);
         var purchaseTree = sequences(views, ParticipantView::treeOrder, minOccurrences, topN);
-        var generalBuildPath = sequences(views,
-                view -> view.completedOrder().size() >= 3 ? firstItems(view.completedOrder(), 3) : List.of(), 1, 1)
+        var generalBuildPath = sequences(views, this::fullLengthBuildPath, 1, 1)
                 .stream().findFirst().orElse(null);
 
         var validRuneViews = views.stream().filter(this::hasCompleteRunes).toList();
@@ -192,8 +192,7 @@ public final class KnowledgeAggregator {
                 .filter(view -> selected.getKey().equals(page(view)))
                 .toList();
 
-        var ownBuildPath = sequences(keystoneViews,
-                view -> view.completedOrder().size() >= 3 ? firstItems(view.completedOrder(), 3) : List.of(), 1, 1)
+        var ownBuildPath = sequences(keystoneViews, this::fullLengthBuildPath, 1, 1)
                 .stream().findFirst().orElse(null);
         var buildPath = ownBuildPath;
         if ((ownBuildPath == null || ownBuildPath.games() < minOccurrences)
@@ -225,6 +224,12 @@ public final class KnowledgeAggregator {
                 .map(stat -> new FullBuildPathStat(stat.sequence(), stat.games(), stat.wins(),
                         stat.games() < minOccurrences))
                 .toList();
+    }
+
+    // Único lugar do critério "caminho com 3+ itens"; vazio quando a partida não chegou a 3.
+    private List<Integer> fullLengthBuildPath(ParticipantView view) {
+        return view.completedOrder().size() >= BUILD_PATH_ITEMS
+                ? firstItems(view.completedOrder(), BUILD_PATH_ITEMS) : List.of();
     }
 
     private List<Integer> firstItems(List<Integer> items, int limit) {
